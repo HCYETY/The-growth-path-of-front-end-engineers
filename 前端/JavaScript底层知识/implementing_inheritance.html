@@ -45,9 +45,55 @@
         // console.log(son.name); // hcy
         // console.log(son.age); // 20
         // console.log(son.color); // ["blue", "red"]
+        
+        // var sister = new child('hg');
+        // console.log(sister.color); // ["blue"]
 
         // 4.原型式继承
-        
+        // function Parent(o) {
+        //     // 创建一个临时性的构造函数
+        //     function F() {}
+        //     // 将传入的对象作为这个构造函数的原型
+        //     F.prototype = o;
+        //     // 返回这个临时类型的一个新实例
+        //     return new F();
+        // }
+        // var person = {
+        //     name: "hcy",
+        //     friends: ["et", "siyang"]
+        // }
+        // var another = Parent(person);
+        // console.log(another.name); // hcy
+        // another.friends.push('hg');
+
+        // var son = Parent(person);
+        // console.log(son.friends); // ["et", "siyang", "hg"]
+        // son.name = 'zbc';
+
+        // var sister = Parent(person);
+        // console.log(sister.name); // hcy
+
+        // 5.寄生式继承
+        // function Parent(o) {
+        //     function F() {}
+        //     F.prototype = o;
+        //     return new F();
+        // }
+        // function createAnother(original) {
+        //     var clone = Parent(original);
+        //     clone.sayHi = function() {
+        //         alert("Hello World!");
+        //     };
+        //     return clone;
+        // }
+        // var person = {
+        //     name:'siyang',
+        //     friends:['hcy']
+        // }
+        // var another = createAnother(person);
+        // another.sayHi(); // Hello World!
+
+        // 6.寄生组合式继承
     </script>
 </body>
 </html>
