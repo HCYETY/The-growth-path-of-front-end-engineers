@@ -6,66 +6,90 @@
 </head>
 <body>
     <script>
-        // call函数模拟思路
-        Function.prototype.simulate_call = function(context) {
-            // 6.假如this参数为null，视为指向window
-            context = context || window;
-            // 1.改变this的指向
-            context.fn = this;
-            // 4.用数组存放不定长的参数
-            var args = [];
-            for(let i=1; i<arguments.length; i++) {
-                args.push('arguments['+i+']');
+        // // call函数模拟思路
+        // Function.prototype.simulate_call = function(context) {
+        //     // 6.假如this参数为null，视为指向window
+        //     context = context || window;
+        //     // 1.改变this的指向
+        //     context.fn = this;
+        //     // 4.用数组存放不定长的参数
+        //     var args = [];
+        //     for(let i=1; i<arguments.length; i++) {
+        //         args.push('arguments['+i+']');
+        //     }
+        //     // 2.执行函数 + 5.把参数数组放到要执行的函数的参数里
+        //     var result = eval('context.fn('+args+')');
+        //     // 3.删除函数
+        //     delete context.fn;
+        //     // 7.函数是可以有返回值的
+        //     return result;
+        // }
+        // var foo = {
+        //     value:1
+        // };
+        // function bar(name, age) {
+        //     console.log(this.value);
+        //     return{
+        //         value:this.value,
+        //         name:name,
+        //         age:age
+        //     }
+        // }
+        // console.log(bar.simulate_call(foo, 'siyang', '19'));
+
+        // // apply函数模拟思路
+        // Function.prototype.simulate_apply = function(context, arr) {
+        //     var context = context || window;
+        //     context.fn = this;
+        //     var result;
+        //     if(!arr) {
+        //         result = context.fn();
+        //     } else {
+        //         var args = [];
+        //         for(let i=0; i<arr.length; i++) {
+        //             args.push('arr['+i+']');
+        //         }
+        //         result = eval('context.fn('+args+')');
+        //     }
+        //     delete context.fn;
+        //     return result;
+        // }
+        // var foo = {
+        //     value:2
+        // }
+        // function bar(name, age) {
+        //     console.log(this.value);
+        //     return {
+        //         value:this.value,
+        //         name:name,
+        //         age:age
+        //     }
+        // }
+        // console.log(bar.simulate_apply(foo, ['hcy', '20']));
+
+        // bind函数模拟思路
+        Function.prototype.create_bind = function(context) {
+            var _this = this;
+            var args = Array.prototype.slice.call(arguments, 1);
+            return function() {
+                var bindArgs = Array.prototype.slice.call(arguments);
+                return _this.apply(context, args.concat(bindArgs));
             }
-            // 2.执行函数 + 5.把参数数组放到要执行的函数的参数里
-            var result = eval('context.fn('+args+')');
-            // 3.删除函数
-            delete context.fn;
-            // 7.函数是可以有返回值的
-            return result;
         }
+
         var foo = {
             value:1
         };
         function bar(name, age) {
             console.log(this.value);
-            return{
-                value:this.value,
-                name:name,
-                age:age
-            }
+            console.log(name); 
+            console.log(age); 
         }
-        console.log(bar.simulate_call(foo, 'siyang', '19'));
-
-        // apply函数模拟思路
-        Function.prototype.simulate_apply = function(context, arr) {
-            var context = context || window;
-            context.fn = this;
-            var result;
-            if(!arr) {
-                result = context.fn();
-            } else {
-                var args = [];
-                for(let i=0; i<arr.length; i++) {
-                    args.push('arr['+i+']');
-                }
-                result = eval('context.fn('+args+')');
-            }
-            delete context.fn;
-            return result;
-        }
-        var foo = {
-            value:2
-        }
-        function bar(name, age) {
-            console.log(this.value);
-            return {
-                value:this.value,
-                name:name,
-                age:age
-            }
-        }
-        console.log(bar.simulate_apply(foo, ['hcy', '20']));
+        // console.log(bar.bind(foo)()); // 75行:1  77行:underfind
+        // var bindFoo = bar.bind(foo); // 1
+        // bindFoo();
+        var bindFoo = bar.create_bind(foo, 'siyang');
+        console.log(bindFoo('19'));
     </script>
 </body>
 </html>

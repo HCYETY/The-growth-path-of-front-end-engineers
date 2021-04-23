@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>垂直水平居中</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #people{
+            display: inline-grid;
+            grid-template-rows: repeat(2, 250px);
+            grid-template-columns: repeat(5, 250px);
+            grid-gap: 15px;
+            width: 1310px;
+            height: 515px;
+        }
+        .parent{
+            width: 250px;
+            height: 250px;
+            background-color: skyblue;
+        }
+        #child{
+            place-items: center;
+            width: 100px;
+            height: 100px;
+            background-color: greenyellow;
+        }
+        .child_1{
+            
+        }
+        .child_2{
+
+        }
+        .child_3{
+
+        }
+        .child_4{
+
+        }
+        .child_5{
+
+        }
+        .child_6{
+
+        }
+        .child_7{
+
+        }
+        .child_8{
+
+        }
+        .child_9{
+
+        }
+        .child_10{
+
+        }
+    </style>
+</head>
+<body>
+    <div id="people">
+        <div class="parent"> <div class="child_1" id="child">我是文本</div> </div>
+        <div class="parent"> <div class="child_2" id="child"></div> </div>
+        <div class="parent"> <div class="child_3" id="child"></div> </div>
+        <div class="parent"> <div class="child_4" id="child"></div> </div>
+        <div class="parent"> <div class="child_5" id="child"></div> </div>
+        <div class="parent"> <div class="child_6" id="child"></div> </div>
+        <div class="parent"> <div class="child_7" id="child"></div> </div>
+        <div class="parent"> <div class="child_8" id="child"></div> </div>
+        <div class="parent"> <div class="child_9" id="child"></div> </div>
+        <div class="parent"> <div class="child_10" id="child"></div> </div>
+    </div>
+</body>
+</html>
