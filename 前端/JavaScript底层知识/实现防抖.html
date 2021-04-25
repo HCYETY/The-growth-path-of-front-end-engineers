@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现防抖</title>
+    <style>
+        #container{
+            width: 100%; 
+            height: 200px; 
+            line-height: 200px; 
+            text-align: center; 
+            color: #fff; 
+            background-color: #444; 
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <button id="button">取消debounce函数</button>
+    <script>
+        // 实现防抖函数
+        function debounce(fn, wait, immediate) {
+            let time, result;
+            let debounced =  function() {
+                // 将 this 指向正确的对象
+                let _this = this;
+                // 提供事件对象 event
+                let args = arguments;
+
+                // 以新的事件的时间为准，更新时间，n秒后才执行
+                if(time) {
+                    clearTimeout(time);
+                }
+                // 增加新需求：我不希望非要等到事件停止触发后才执行，我希望立刻执行函数，然后等到停止触发 n 秒后，才可以重新触发执行。
+                // 立刻执行
+                if(immediate) {
+                    let flag = !time;
+                    time = setTimeout(function() {
+                        time = null;
+                    }, wait)
+                    if (flag) {
+                        result = fn.apply(_this, args);
+                    }
+                } else {
+                    time = setTimeout(function() {
+                        fn.apply(_this, args);
+                    }, wait);
+                }
+                // getUserAction 函数可能是有返回值的，所以要返回函数的执行结果
+                return result;
+            };
+
+            // 另一个需求：希望有一个按钮，点击后，取消防抖，这样再去触发的时候，就可以又立刻执行
+            debounced.cancel = function() {
+                clearTimeout(time);
+                time = null;
+            };
+
+            return debounced;
+        }
+
+        var count = 1;
+        var container = document.getElementById("container");
+        function getUserAction() {
+            container.innerHTML = count++;
+        };
+        var setUserAction = debounce(getUserAction, 1000, true);
+        container.onmousemove = setUserAction;
+        document.getElementById("button").addEventListener('click', function() {
+            setUserAction.cancel();
+        })
+    </script>
+</body>
+</html>
