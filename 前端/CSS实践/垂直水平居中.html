@@ -10,67 +10,93 @@
         }
         #people{
             display: inline-grid;
-            grid-template-rows: repeat(2, 250px);
-            grid-template-columns: repeat(5, 250px);
+            grid-template-rows: repeat(2, 200px);
+            grid-template-columns: repeat(4, 350px);
             grid-gap: 15px;
-            width: 1310px;
-            height: 515px;
+            width: 1460px;
+            height: 465px;
         }
         .parent{
-            width: 250px;
-            height: 250px;
+            width: 350px;
+            height: 200px;
             background-color: skyblue;
         }
-        #child{
+        .child{
             place-items: center;
             width: 100px;
             height: 100px;
             background-color: greenyellow;
         }
-        .child_1{
-            
+        /* 法一 */
+        #parent_1{
+            position: relative;
         }
-        .child_2{
-
+        #child_1{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -50px;
+            margin-top: -50px;
         }
-        .child_3{
-
+        /* 法二 */
+        #parent_2{
+            position: relative;
         }
-        .child_4{
-
+        #child_2{
+            position: absolute;
+            left: calc(50% - 50px);
+            top: calc(50% - 50px);
         }
-        .child_5{
-
+        /* 法三 */
+        #parent_3{
+            position: relative;
         }
-        .child_6{
-
+        #child_3{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-        .child_7{
-
+        /* 法四 */
+        #parent_4{
+            position: relative;
         }
-        .child_8{
-
+        #child_4{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
         }
-        .child_9{
-
+        /* 法五 */
+        #parent_5{
+            display: flex;
+            justify-content: center;
+            align-items: center;    
         }
-        .child_10{
-
+        /* 法六 */
+        #parent_6{
+            display: grid;
+        }
+        #child_6{
+            align-self: center;
+            justify-self: center;
         }
     </style>
 </head>
 <body>
     <div id="people">
-        <div class="parent"> <div class="child_1" id="child">我是文本</div> </div>
-        <div class="parent"> <div class="child_2" id="child"></div> </div>
-        <div class="parent"> <div class="child_3" id="child"></div> </div>
-        <div class="parent"> <div class="child_4" id="child"></div> </div>
-        <div class="parent"> <div class="child_5" id="child"></div> </div>
-        <div class="parent"> <div class="child_6" id="child"></div> </div>
-        <div class="parent"> <div class="child_7" id="child"></div> </div>
-        <div class="parent"> <div class="child_8" id="child"></div> </div>
-        <div class="parent"> <div class="child_9" id="child"></div> </div>
-        <div class="parent"> <div class="child_10" id="child"></div> </div>
+        <div class="parent" id="parent_1"> <div class="child" id="child_1"></div> </div>
+        <div class="parent" id="parent_2"> <div class="child" id="child_2"></div> </div>
+        <div class="parent" id="parent_3"> <div class="child" id="child_3"></div> </div>
+        <div class="parent" id="parent_4"> <div class="child" ></div> </div>
+        <div class="parent" id="parent_5"> <div class="child" id="child_5"></div> </div>
+        <div class="parent" id="parent_6"> <div class="child" id="child_6"></div> </div>
+        <div class="parent" id="parent_7"> <div class="child" id="child_7"></div> </div>
+        <div class="parent" id="parent_8"> <div class="child" id="child_8"></div> </div>
+        <div class="parent" id="parent_9"> <div class="child" id="child_9"></div> </div>
+        <div class="parent" id="parent_10"> <div class="child" id="child_10"></div> </div>
     </div>
 </body>
 </html>
