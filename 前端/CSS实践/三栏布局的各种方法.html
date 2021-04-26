@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>三栏布局中间自适应的各种方法</title>
+    <style>
+    /* 实现三栏布局中间自适应的布局方式有：
+    1.两边使用 float，中间使用 margin
+    2.两边使用 absolute，中间使用 margin
+    3.两边使用 float 和负 margin
+    4.display: table 实现
+    5.flex实现
+    6.grid网格布局 */
+        /* 1.两边使用 float，中间使用 margin */
+        /* .wrap{
+            overflow: hidden;
+            background: #eee;
+            height: 200px;
+            padding: 20px;
+        }
+        .left, .right{
+            width: 200px;
+            height: 200px;
+        }
+        .left{
+            float: left;
+            background: coral;
+        }
+        .right{
+            float: right;
+            background: lightblue;
+        }
+        .middle{
+            height: 200px;
+            margin-left: 220px;
+            margin-right: 220px;
+            background: lightpink;
+        } */
+        /* 这种实现方式存在缺陷：
+        主体内容是最后加载的。
+        右边在主体内容之前，如果是响应式设计，不能简单的换行展示 */
+
+        /* 2.两边使用 absolute，中间使用 margin */
+        /* .wrap{
+            position: relative;
+        }
+        .left, .right{
+            position: absolute;
+            top: 0;
+            width: 100px;
+            height: 200px;
+        }
+        .left{
+            left: 0;
+            background: coral;
+        }
+        .right{
+            right: 0;
+            background: lightblue;
+        }
+        .middle{
+            height: 200px;
+            margin: 0 110px;
+            background: lightpink;
+        } */
+
+        /* 3.两边使用 float 和负 margin */
+        /* .left, .right{
+            width: 100px;
+            height: 200px;
+        }
+        .left{
+            float: left;
+            background: coral;
+        }
+        .right{
+            float: right;
+            background: lightblue;
+        } */
+
+
+
+        /* 4.display: table 实现 */
+
+
+        /* 5.flex实现 */
+        /* .wrap{
+            display: flex;
+        }
+        .left{
+            width: 200px;
+            height: 100px;
+            background: coral;
+        }
+        .right{
+            width: 120px;
+            height: 100px;
+            background: lightblue;
+        }
+        .middle{
+            flex: 1;
+            margin: 0 10px;
+            background: lightpink;
+        } */
+        
+        /* 6.grid网格布局 */
+        .wrap{
+            display: grid;
+            grid-template-columns: 200px auto 200px;
+            grid-template-rows: 100px;
+            grid-column-gap: 10px;
+        }
+        .left{
+            background: coral;
+        }
+        .right{
+            background: lightblue;
+        }
+        .middle{
+            background: lightpink;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="left">左侧</div>
+        <div class="middle">中间</div>
+        <div class="right">右侧</div>
+    </div>   
+</body>
+</html>
