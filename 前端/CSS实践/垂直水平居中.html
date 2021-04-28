@@ -27,7 +27,7 @@
             height: 100px;
             background-color: greenyellow;
         }
-        /* 法一 */
+        /* 法一：最常见的方法，这种方法只能在子元素宽高已知的情况下使用 */
         #parent_1{
             position: relative;
         }
@@ -38,30 +38,36 @@
             margin-left: -50px;
             margin-top: -50px;
         }
-        /* 法二 */
-        #parent_2{
-            position: relative;
-        }
+        /* 法二：这种方法只在子元素宽高已知的情况下适用 */
         #child_2{
-            position: absolute;
-            left: calc(50% - 50px);
-            top: calc(50% - 50px);
+            position: relative;
+            left: 125px;
+            top: 50px;
         }
-        /* 法三 */
+        /* 法三：思想同上一种方法，只不过用计算属性替代了偏移量和 margin */
         #parent_3{
             position: relative;
         }
         #child_3{
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: calc(50% - 50px);
+            top: calc(50% - 50px);
         }
-        /* 法四 */
+        /* 法四：对子元素的宽高没有要求，在未知宽高的情况下依然适用。这种方式在子元素是单行或多行文本的时候要求垂直居中的情况下十分适用。 */
         #parent_4{
             position: relative;
         }
         #child_4{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* 法五：这种方式同样只在子元素高宽已知的情况下使用。 */
+        #parent_5{
+            position: relative;
+        }
+        #child_5{
             position: absolute;
             top: 0;
             left: 0;
@@ -69,34 +75,63 @@
             bottom: 0;
             margin: auto;
         }
-        /* 法五 */
-        #parent_5{
+        /* 法六：子元素宽高已知未知的情况都适用 */
+        #parent_6{
             display: flex;
             justify-content: center;
-            align-items: center;    
+            align-items: center;  
+
+            /* 兼容safari浏览器 */
+            -webkit-display:flex; 
+            -webkit-align-items: center;
+            -webkit-justify-content: center;
         }
-        /* 法六 */
-        #parent_6{
+        /* 法七：最简单的方式，子元素宽高已知未知的情况都适用 */
+        #parent_7{
+            display: flex;
+        }
+        #child_7{
+            margin: auto;
+        }
+        /* 法八 */
+        #parent_8{
             display: grid;
         }
-        #child_6{
+        #child_8{
             align-self: center;
             justify-self: center;
+        }
+        /* 法九 */
+        #parent_9{
+            display: table-cell;
+            vertical-align: middle;
+        }
+        #child_9{
+            margin: 0 auto;
+        }
+        /* 法十 */
+        #parent_10{
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+        #child_10{
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div id="people">
-        <div class="parent" id="parent_1"> <div class="child" id="child_1"></div> </div>
-        <div class="parent" id="parent_2"> <div class="child" id="child_2"></div> </div>
-        <div class="parent" id="parent_3"> <div class="child" id="child_3"></div> </div>
-        <div class="parent" id="parent_4"> <div class="child" ></div> </div>
-        <div class="parent" id="parent_5"> <div class="child" id="child_5"></div> </div>
-        <div class="parent" id="parent_6"> <div class="child" id="child_6"></div> </div>
-        <div class="parent" id="parent_7"> <div class="child" id="child_7"></div> </div>
-        <div class="parent" id="parent_8"> <div class="child" id="child_8"></div> </div>
-        <div class="parent" id="parent_9"> <div class="child" id="child_9"></div> </div>
-        <div class="parent" id="parent_10"> <div class="child" id="child_10"></div> </div>
+        <div class="parent" id="parent_1"> <div class="child" id="child_1">one</div> </div>
+        <div class="parent" id="parent_2"> <div class="child" id="child_2">two</div> </div>
+        <div class="parent" id="parent_3"> <div class="child" id="child_3">three</div> </div>
+        <div class="parent" id="parent_4"> <div class="child" id="child_4">four</div> </div>
+        <div class="parent" id="parent_5"> <div class="child" id="child_5">five</div> </div>
+        <div class="parent" id="parent_6"> <div class="child" id="child_6">six</div> </div>
+        <div class="parent" id="parent_7"> <div class="child" id="child_7">seven</div> </div>
+        <div class="parent" id="parent_8"> <div class="child" id="child_8">eight</div> </div>
+        <div class="parent" id="parent_9"> <div class="child" id="child_9">nine</div> </div>
+        <div class="parent" id="parent_10"> <div class="child" id="child_10">ten</div> </div>
     </div>
 </body>
 </html>
