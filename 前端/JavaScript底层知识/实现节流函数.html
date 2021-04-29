@@ -3,8 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>实现节流</title>
-</head>
+    <style>
+        #container{
+            width: 100%; 
+            height: 200px; 
+            line-height: 200px; 
+            text-align: center; 
+            color: #fff; 
+            background-color: #444; 
+            font-size: 30px;
+        }
+    </style></head>
 <body>
-    
+    <div id="container"></div>
+    <button id="button">取消debounce函数</button>
+    <script>
+        function throttle(fn, wait, options) {
+            let _this, args, result, time;
+            let previous = 0;
+            if(!options) {
+                options = {};
+            }
+
+            let later = function() {
+                previous = options.leading===false ? 0 : new Date().getTime();
+                time = null;
+                fn.apply(_this, args);
+                if(!time) {
+                    _this = args = null;
+                }
+            };
+
+            let throttled = function() {
+                _this = this;
+                args = arguments;
+                let now = new Date().getTime();
+                if(!previous && options.leading===false) {
+                    previous = now;
+                }
+                let remaining = wait - (now - previous);
+                if(remaining<=0 || remaining>wait) {
+                    if(time) {
+                        clearTimeout(time);
+                        time = null;
+                    }
+                    fn.apply(_this, args);
+                    previous = now;
+                    if(!time) {
+                        _this = args = null;
+                    }
+                } else if(!time && options.trailing!==false) {
+                    time = setTimeout(later, remaining);
+                }
+            };
+
+            throttle.cancel = function() {
+                clearTimeout(time);
+                previous = 0;
+                time = null;
+            }
+
+            return throttled; 
+        }
+
+        var count = 1;
+        var container = document.getElementById("container");
+        function getUserAction() {
+            container.innerHTML = count++;
+        };
+        // leading：false 表示禁用第一次执行
+        // trailing: false 表示禁用停止触发的回调
+        var setUserAction = throttle(getUserAction, 1000, {trailing:false});
+        container.onmousemove = setUserAction;
+        document.getElementById("button").addEventListener('click', function() {
+            setUserAction.cancel();
+        })
+    </script>
 </body>
 </html>
