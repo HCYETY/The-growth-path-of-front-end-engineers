@@ -68,13 +68,33 @@
         // console.log(bar.simulate_apply(foo, ['hcy', '20']));
 
         // bind函数模拟思路
-        Function.prototype.create_bind = function(context) {
-            var _this = this;
-            var args = Array.prototype.slice.call(arguments, 1);
-            return function() {
-                var bindArgs = Array.prototype.slice.call(arguments);
-                return _this.apply(context, args.concat(bindArgs));
+        // 一句话介绍 bind:
+        // bind() 方法会创建一个新函数。当这个新函数被调用时，bind() 的第一个参数将作为它运行时的 this，之后的一序列参数将会在传递的实参前传入作为它的参数。(来自于 MDN )
+        // bind 函数的三个特点：
+        // 1.返回一个函数
+        // 2.可以传入参数
+        // 3.一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this值被忽略，同时调用时的参数被提供给模拟函数。
+        Function.prototype.simulate_bind = function(context) {
+            if (typeof this !== "function") {
+                throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
             }
+            var _this = this;
+            // 获取 simulate_bind函数 从第二个参数到最后一个参数，转换成一个正式数组
+            var args = Array.prototype.slice.call(arguments, 1);
+
+            var fNOP = function () {};
+
+            // bind函数特点之一：返回一个函数
+            var fBound = function() {
+                // 这个时候的arguments是指bind返回的函数传入的参数
+                var bindArgs = Array.prototype.slice.call(arguments);
+                // 之所以return，是考虑到绑定函数可能是有返回值的
+                return _this.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
+            }
+            
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+            return fBound;
         }
 
         var foo = {
@@ -85,11 +105,8 @@
             console.log(name); 
             console.log(age); 
         }
-        // console.log(bar.bind(foo)()); // 75行:1  77行:underfind
-        // var bindFoo = bar.bind(foo); // 1
-        // bindFoo();
-        var bindFoo = bar.create_bind(foo, 'siyang');
-        console.log(bindFoo('19'));
+        var bindFoo = bar.simulate_bind(foo, 'siyang');
+        bindFoo('19');
     </script>
 </body>
 </html>

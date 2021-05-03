@@ -13,56 +13,57 @@
             background-color: #444; 
             font-size: 30px;
         }
-    </style></head>
+    </style>
+</head>
 <body>
     <div id="container"></div>
+    <button id="button">取消throttle函数</button>
     <script>
         function throttle(fn, wait, options) {
-            let _this, args, result, time;
-            let previous = 0;
+            let _this, args;
+            let time, previous = 0;
             if(!options) {
                 options = {};
             }
-
-            let later = function() {
-                previous = options.leading===false ? 0 : new Date().getTime();
-                time = null;
-                fn.apply(_this, args);
-                if(!time) {
-                    _this = args = null;
-                }
-            };
 
             let throttled = function() {
                 _this = this;
                 args = arguments;
                 let now = new Date().getTime();
+                // 无头有尾的准备工作
                 if(!previous && options.leading===false) {
                     previous = now;
                 }
                 let remaining = wait - (now - previous);
+                // 有头的代码：即时间戳
+                // 如果没有剩余的时间了或者你改了系统时间
                 if(remaining<=0 || remaining>wait) {
                     if(time) {
                         clearTimeout(time);
-                        time = null;
+                        time = null;  // 设置为null，让定时器可以启动
                     }
+                    previous = now;  // 及时更新时间戳
                     fn.apply(_this, args);
-                    previous = now;
-                    if(!time) {
-                        _this = args = null;
-                    }
-                } else if(!time && options.trailing!==false) {
-                    time = setTimeout(later, remaining);
+                    // if(!time) context = args = null;
+                } 
+                // 有尾的代码：即定时器
+                else if(!time && options.trailing!==false) {
+                    time = setTimeout(() => {
+                        previous = 0;
+                        time = null;
+                        fn.apply(_this, args);
+                        // if(!time) context = args = null;
+                    }, remaining);
                 }
             };
 
-            throttle.cancel = function() {
+            throttled.cancel = function() {
                 clearTimeout(time);
-                previous = 0;
                 time = null;
+                previous = 0;
             }
 
-            return throttled; 
+            return throttled;
         }
 
         var count = 1;
@@ -70,9 +71,9 @@
         function getUserAction() {
             container.innerHTML = count++;
         };
-        // leading：false 表示禁用第一次执行
-        // trailing: false 表示禁用停止触发的回调
-        var setUserAction = throttle(getUserAction, 1000, {trailing:false});
+        // leading:false 表示禁用第一次执行
+        // trailing:false 表示禁用停止触发的回调
+        var setUserAction = throttle(getUserAction, 1000, {leading:false});
         container.onmousemove = setUserAction;
         document.getElementById("button").addEventListener('click', function() {
             setUserAction.cancel();
