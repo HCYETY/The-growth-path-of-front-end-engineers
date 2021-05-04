@@ -5,7 +5,7 @@
     <title>等比例缩放</title>
     <style>
 /* 方法一：媒体查询 */
-        /* div{
+        div{
             width: 500px;
             height: 500px; 
             background-color: skyblue;
@@ -23,18 +23,18 @@
                 width: 200px;
                 height: 200px;
             }
-        } */
+        }
 
 /* 方法二：百分比 */
         /* 原理：
         一个元素的 padding，如果值是一个百分比，那这个百分比是相对于其父元素的宽度而言的，padding-bottom 也是如此。
         使用 padding-bottom 来代替 height 来实现高度与宽度成比例的效果，将 padding-bottom设置为想要实现的 height 的值。同时将其 height 设置为 0 以使元素的“高度”等于 padding-bottom 的值，从而实现需要的效果。 */
-        /* .child{
+        .child{
             padding-bottom: 30%;
             height: 0;
             width: 50%;
             background-color: skyblue;
-        } */
+        }
         /* 这个div的高宽比就是30%:50% */
 
         /* 方法三：一个隐藏的图片来实现 */
