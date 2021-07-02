@@ -175,14 +175,85 @@ useEffect(()  =>  {
         - 如果不需要清除副作用，就可以不用返回函数
 - 用途：向服务器请求数据，设置订阅，手动更改 React 组件中的 DOM 等都属于副作用。
 > 参考链接 ->   
-> [阮一峰的网络日志：React Hooks 入门教程](https://www.ruanyifeng.com/blog/2019/09/react-hooks.html)
+> [阮一峰的网络日志：React Hooks 入门教程](https://www.ruanyifeng.com/blog/2019/09/react-hooks.html)   
 > [官网：使用 Effect Hook](https://react.docschina.org/docs/hooks-effect.html)   
 > [官网：Hook API 索引](https://react.docschina.org/docs/hooks-reference.html)
 
-#### 自定义 Hook
-
+#### 其他 hooks
+1. useMemo
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+- 语法：把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。如果没有提供依赖项数组，useMemo 在每次渲染时都会计算新的值。
+- 注意：传入 useMemo 的函数会在渲染期间执行。不能在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo。
+- 使用场景：我们知道无状态组件的更新是从头到尾的更新，如果你想要从新渲染一部分视图，而不是整个组件，那么用useMemo是最佳方案，避免了不需要的更新，和不必要的上下文的执行
+- 优点：
+  - 可以减少不必要的循环，减少不必要的渲染
+  - 可以减少子组件的渲染次数
+  - 让函数在某个依赖项改变的时候才运行，避免不必要的开销（这里要注意⚠️⚠️⚠️的是如果被useMemo包裹起来的上下文,形成一个独立的闭包，会缓存之前的state值,如果没有加相关的更新条件，是获取不到更新之后的state的值的，如下边⬇️）
+    ```js
+    const DemoUseMemo=()=>{
+    const [ number ,setNumber ] = useState(0)
+    const newLog = useMemo(()=>{
+        const log =()=>{
+            /* 点击span之后 打印出来的number 不是实时更新的number值 */
+            console.log(number)
+        }
+        return log /* [] 没有 number */  
+        
+    },[])
+    return <div>
+        <div onClick={()=>newLog()} >打印</div>
+        <span onClick={ ()=> setNumber( number + 1 )  } >增加</span>
+    </div>
+    }
+    ```
+2. useCallback
+```js
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+返回一个 memoized 回调函数。
+- 语法：把内联回调函数及依赖项数组作为参数传入 useCallback，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新。
+- 使用场景：当你把回调函数传递给经过优化的并使用引用相等性去避免非必要渲染（例如 shouldComponentUpdate）的子组件时，它将非常有用。
+- `useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`。
+3. useRef
+```js
+const refContainer = useRef(initialValue); 
+```
+- 语法：useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变。
+4. useLayoutEffect
+- `useLayoutEffect` 代码可能会阻塞浏览器的绘制
+- useEffect 执行顺序 组件更新挂载完成 -> 浏览器dom 绘制完成 -> 执行useEffect回调 。
+- useLayoutEffect 执行顺序 组件更新挂载完成 -> 执行useLayoutEffect回调-> 浏览器dom 绘制完成
+- 如果我们在 `useEffect` 重新请求数据，渲染视图过程中，肯定会造成画面闪动的效果。而如果用 `useLayoutEffect` ，回调函数的代码就会阻塞浏览器绘制，所以肯定会引起画面卡顿等效果，那么具体要用 `useLayoutEffect` 还是 `useEffect` ，要看实际项目的情况，大部分的情况 `useEffect` 都可以满足的。
+```js
+const DemoUseLayoutEffect = () => {
+    const target = useRef()
+    useLayoutEffect(() => {
+        /*我们需要在dom绘制之前，移动dom到制定位置*/
+        const { x ,y } = getPositon() /* 获取要移动的 x,y坐标 */
+        animate(target.current,{ x,y })
+    }, []);
+    return (
+        <div >
+            <span ref={ target } className="animate"></span>
+        </div>
+    )
+}
+```
 
 **更多 hooks 可参考官网学习：**[Hook API 索引](https://react.docschina.org/docs/hooks-reference.html)
+
+#### 自定义 Hook
+当两个函数组件需要共享相同的逻辑时，我们可以将其提取成第三个函数。
+
+自定义 Hook 是一个函数，其名称必须以 “use” 开头（否则，由于无法判断某个函数是否包含对其内部 Hook 的调用，React 将无法自动检查你的 Hook 是否违反了），函数内部可以调用其他的 Hook。
+> [自定义 Hook](https://react.docschina.org/docs/hooks-custom.html)
 
 1. 在无状态组件每一次函数上下文执行的时候，react用什么方式记录了hooks的状态？
 2. 多个react-hooks用什么来记录每一个hooks的顺序的 ？ 换个问法！为什么不能条件语句中，声明hooks? hooks声明为什么在组件的最顶部？

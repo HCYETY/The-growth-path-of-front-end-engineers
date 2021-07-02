@@ -1,8 +1,5 @@
-========
 
     目录
-
-========
 - [基本数据类型](#基本数据类型)
 - [引用类型](#引用类型)
 - [类型转换](#类型转换)
@@ -13,8 +10,6 @@
     - [原始值转对象](#原始值转对象)
     - [对象转布尔值](#对象转布尔值)
     - [对象转字符串和数字](#对象转字符串和数字)
-    - [对象转字符串](#对象转字符串)
-    - [对象转数字](#对象转数字)
   - [隐式数据类型转化](#隐式数据类型转化)
     - [一元操作符 +](#一元操作符-)
     - [二元操作符 +](#二元操作符-)
@@ -24,16 +19,16 @@
   - [浮点数的运算](#浮点数的运算)
   - [其他](#其他)
 - [var let const 区别使用](#var-let-const-区别使用)
-  - [var 语句用于声明变量](#var-语句用于声明变量)
-  - [let命令，用来声明变量。](#let命令用来声明变量)
-  - [const声明一个只读的常量。](#const声明一个只读的常量)
-  - [变量提升：把变量声明提升到当前执行环境的最顶端](#变量提升把变量声明提升到当前执行环境的最顶端)
+  - [var](#var)
+  - [let](#let)
+  - [const](#const)
+  - [变量提升](#变量提升)
 - [执行上下文、词法作用域](#执行上下文词法作用域)
-  - [对于每个执行上下文，都有三个重要属性：](#对于每个执行上下文都有三个重要属性)
+  - [执行上下文的三个重要属性：](#执行上下文的三个重要属性)
   - [执行上下文栈和执行上下文的具体变化过程](#执行上下文栈和执行上下文的具体变化过程)
-  - [JavaScript 采用的是词法作用域（也就是静态作用域），函数的作用域在函数定义的时候就决定了；而与词法作用域相对的是动态作用域，函数的作用域是在函数调用的时候才决定的。](#javascript-采用的是词法作用域也就是静态作用域函数的作用域在函数定义的时候就决定了而与词法作用域相对的是动态作用域函数的作用域是在函数调用的时候才决定的)
 - [原型链、作用域](#原型链作用域)
-  - [图中由相互关联的原型组成的链状结构就是原型链，也就是蓝色的这条线。](#图中由相互关联的原型组成的链状结构就是原型链也就是蓝色的这条线)
+  - [作用域](#作用域)
+  - [原型链](#原型链)
   - [原型链的问题：](#原型链的问题)
   - [实践：实现一个 instanceof 函数](#实践实现一个-instanceof-函数)
 - [闭包、IIFE](#闭包iife)
@@ -67,7 +62,7 @@
 
 ========
 ## 基本数据类型
-常见的五种基本数据类型是：Undifined、Null、Boolean、Number和String。后来ES6 引入了一种新的原始数据类型 Symbol，表示独一无二的值，它是 JavaScript 语言的第七种数据类型。
+常见的五种基本数据类型是：`Undifined`、`Null`、`Boolean`、`Number`和`String`。后来ES6 引入了一种新的原始数据类型 `Symbol`，表示独一无二的值，它是 JavaScript 语言的第七种数据类型。
 > Symbol 的使用可参考：[ECMAScript 6 入门 之 Symbol](https://es6.ruanyifeng.com/#docs/symbol)   
 1. 基本数据类型的值是不可变的，任何方法都无法改变一个基本类型的值，比如一个字符串：
     ```js
@@ -78,19 +73,20 @@
     var s = "hello";
     s.toUpperCase(); // HELLO
     console.log(s); // hello
+
+    // 通过这两个例子，我们会发现原先定义的变量name的值始终没有发生改变
+    // 而调用substr()和toUpperCase()方法后返回的是一个新的字符串，跟原先定义的变量name并没有关系
     ```
-    > [JavaScript substr() 方法](https://www.w3school.com.cn/jsref/jsref_substr.asp)      
+    > [JavaScript substr() 方法](https://www.w3school.com.cn/jsref/jsref_substr.asp)          
 
-通过这两个例子，我们会发现原先定义的变量name的值始终没有发生改变，而调用substr()和toUpperCase()方法后返回的是一个新的字符串，跟原先定义的变量name并没有关系
-
-或许有人会有以下的疑问：
-```js
-var name = "change";
-name = "change1";
-console.log(name); // change1
-```
-- 这样看起来name的值“改变了”，其实，var name = “change”，这里的基础类型是string，也就是“change”,这里的“change”是不可以改变的，**name只是指向“change”的一个指针，指针的指向可以改变，所以你可以name = “change1”.此时name指向了“change1”**，同理，这里的“change1”同样不可以改变
-- 也就是说这里你认为的改变只是“指针的指向改变”，这里的基础类型指的是“change”，而不是name，要区分清楚
+    或许有人会有以下的疑问：
+    ```js
+    var name = "change";
+    name = "change1";
+    console.log(name); // change1
+    ```
+    - 这样看起来 name 的值“改变了”，其实 `var name = “change”`，这里的基础类型是 `string` ，也就是“change”,这里的“change”是不可以改变的，**name只是指向“change”的一个指针，指针的指向可以改变，所以你可以name = “change1”，代表此时name指向了“change1”**。同理，这里的“change1”同样不可以改变
+    - 也就是说这里你认为的改变只是“指针的指向改变”，这里的基础类型指的是“change”，而不是name，需区分清楚
 
 2. 基本数据类型不可以添加属性和方法
     ```js
@@ -99,19 +95,19 @@ console.log(name); // change1
     p.method = function(){console.log(name)};
     console.log(p.age); // undefined
     console.log(p.method); // undefined
-    ```
-通过上面的代码，我们知道不能给基本类型添加属性和方法，也再次说明基本类型是不可变的
 
+    // 通过上面的代码，我们知道不能给基本类型添加属性和方法，也再次说明基本类型是不可变的
+    ```
 3. 基本数据类型的赋值是简单赋值   
-如果从一个变量向另一个变量赋值基本类型的值，会在变量对象上创建一个新值，然后把该值复制到为新变量分配的位置上
+如果从一个变量向另一个变量赋值`基本类型`的值，会在变量对象上创建一个新值，然后把该值复制到为新变量分配的位置上
     ```js
     var a = 10;
     var b = a;
     a++;
-    console.log(a) // 11
-    console.log(b) // 10
+    console.log(a); // 11
+    console.log(b); // 10
     ```
-上面的代码中， a 中保存的值是10。当使用 a 的值来初始化 b 时， b 中也保存了值 10 。但 b 中的 10 和 a 中的 10 是完全独立的。 b 中的值只是 a 中值的一个副本。所以这两个变量可以参与任何操作而不会相互影响。
+    上面的代码中， a 中保存的值是10。当使用 a 的值来初始化 b 时， b 中也保存了值 10 。但 b 中的 10 和 a 中的 10 是完全独立的。 b 中的值只是 a 中值的一个副本。所以这两个变量可以参与任何操作而不会相互影响。
 
 4. 基本数据类型的比较是值的比较
     ```js
@@ -119,10 +115,10 @@ console.log(name); // change1
     var b = true;
     console.log(a == b); // true
     console.log(a == b); // false
-    ```
-上面 a 和 b 的数据类型不同，但是也可以进行值的比较，这是因为在比较之前，自动进行了数据类型的 隐式转换。   
-== : 只进行值的比较；=== : 不仅进行值的比较，还要进行数据类型的比较
 
+    // 上面 a 和 b 的数据类型不同，但是也可以进行值的比较，这是因为在比较之前，自动进行了数据类型的 隐式转换。   
+    ```
+    `== `: 只进行值的比较；`===` : 不仅进行值的比较，还要进行数据类型的比较
 5. 基本数据类型是存放在栈区的   
 假如有以下几个基本类型的变量：
     ```js
@@ -130,19 +126,19 @@ console.log(name); // change1
     var city = "guangzhou";
     var age = 22;
     ```
-那么它的存储结构如下所示：
-|栈区A|栈区A|
-|:--:|:--:|
-|name|jozo|
-|city|guangzhou|
-|age|22|
+    那么它的存储结构如下所示：
+    |栈区A|栈区A|
+    |:--:|:--:|
+    |name|jozo|
+    |city|guangzhou|
+    |age|22|
 
-栈区包括了变量的标识符和变量的值
+    同一个栈区里包括了变量的标识符和变量的值
 
 ---
 
 ## 引用类型
-除过上面的 6 种基本数据类型外，剩下的就是引用类型了，统称为 Object 类型。细分的话，有：Object 类型、Array 类型、Date 类型、RegExp 类型、Function 类型 等。
+除过上面的 6 种基本数据类型外，剩下的就是引用类型了，统称为 `Object` `类型。细分的话，有：Object` 类型、`Array` 类型、`Date` 类型、`RegExp` 类型、`Function` 类型 等。
 1. 引用类型的值是可以改变的
 2. 引用类型可以添加属性和方法
 3. 引用类型的赋值是对象引用
@@ -158,19 +154,19 @@ console.log(name); // change1
     console.log(a.age); // 29
     console.log(b.age); // 29
     ```
-当 a 向 b 赋值引用类型的值时，同样也会将储存在 a 中的对象的值复制一份，并放到为 b 分配的空间中。**此时引用类型保存在 b 中的是对象在堆内存中的地址**。所以，与基本数据类型的简单赋值不同，**这个值的副本实际上是一个指针，而这个指针指向存储在堆内存的一个对象**。那么**赋值操作后，两个变量都保存了同一个对象地址，而这两个地址指向了同一个对象**。因此，改变其中任何一个变量，都会互相影响。
-他们的关系如下图：
-![图片来源网络](../img/01.png)   
-因此，引用类型的赋值其实是对象保存在栈区地址指针的赋值，所以两个变量指向同一个对象，任何的操作都会互相影响。
+    当 a 向 b 赋值引用类型的值时，同样也会将储存在 a 中的对象的值复制一份，并放到为 b 分配的空间中。**此时引用类型保存在 b 中的是对象在堆内存中的地址**。所以，与基本数据类型的简单赋值不同，**这个值的副本实际上是一个指针，而这个指针指向存储在堆内存的一个对象**。那么**赋值操作后，两个变量都保存了同一个对象地址，而这两个地址指向了同一个对象**。因此，改变其中任何一个变量，都会互相影响。
+    他们的关系如下图：
+    ![图片来源网络](img/01.png)
+    因此，引用类型的赋值其实是对象保存在栈区地址指针的赋值，所以两个变量指向同一个对象，任何的操作都会互相影响。
 
-4. 引用类型的比较是引用的比较
+1. 引用类型的比较是引用的比较
     ```js
     var person1 = {};
     var person2 = {};
     console.log(person1 == person2); // false
     ```
-Q：为什么两个对象看起来一摸一样，但是却不相等呢？   
-A：因为引用类型的比较是引用的比较，换句话说，就是比较两个对象保存在栈区的指向堆内存的地址是否相同，此时，虽然p1和p2看起来都是一个”{}”，但是他们保存在栈区中的指向堆内存的地址却是不同的，所以两个对象不相等
+    Q：为什么两个对象看起来一摸一样，但是却不相等呢？   
+    A：因为引用类型的比较是引用的比较，换句话说，就是`比较两个对象保存在栈区的指向堆内存的地址是否相同`，此时，虽然 p1 和 p2 看起来都是一个”{}”，但是他们保存在栈区中的指向堆内存的地址却是不同的，所以两个对象不相等
 
 5. 引用类型是同时保存在栈区和堆区中的   
 引用类型的存储需要在内存的栈区和堆区共同完成，栈区保存变量标识符和指向堆内存的地址
@@ -180,16 +176,16 @@ A：因为引用类型的比较是引用的比较，换句话说，就是比较�
     var person2 = {name:"change2"};
     var person3 = {name:"change3"};
     ```
-则这三个对象在内存中保存的情况如下图：
-![图片来源网络](../img/02.png)
+    则这三个对象在内存中保存的情况如下图：
+    ![图片来源网络](img/02.png)
 
 ---
 
 ## 类型转换
 ### 显式数据类型转化
-ES6 前，JavaScript 共有六种数据类型：Undefined、Null、Boolean、Number、String、Object。
+ES6 前，JavaScript 共有六种数据类型：`Undefined`、`Null`、`Boolean`、`Number`、`String`、`Object`。
 #### 原始值转布尔   
-我们使用 Boolean 函数将类型转换成布尔类型，在 JavaScript 中，只有 6 种值可以被转换成 false，其他都会被转换成 true。
+我们使用 `Boolean函数` 将类型转换成布尔类型，在 JavaScript 中，只有 6 种值可以被转换成 false，其他都会被转换成 true。
 ```js
 // 当 Boolean 函数不传任何参数时，会返回 false。 
 console.log(Boolean()) // false
@@ -202,12 +198,12 @@ console.log(Boolean(NaN)) // false
 console.log(Boolean("")) // false
 ```
 #### 原始值转数字   
-我们可以使用 Number 函数将类型转换成数字类型。如果 Number 函数不传参数，返回 +0；如果有参数，隐式调用 ToNumber(value)，ToNumber 则直接给了一个对应的结果表，表如下。但如果参数无法被转换为数字，则返回 NaN。
+我们可以使用 `Number函数` 将类型转换成数字类型。如果 Number 函数**不传参数，返回 +0**；如果**有参数，隐式调用 ToNumber(value)**，ToNumber 则直接给了一个对应的结果表，表如下。但如果**参数无法被转换为数字，则返回 NaN**。
 |参数类型|结果|
 |:--:|:--:|
 |Undefined|NaN|
 |Null|+0|
-|Boolean|如果参数是true，返回1.参数为false，返回+0|
+|Boolean|如果参数是true，返回1；参数为false，返回+0|
 |Number|返回与之相等的值|
 |String|这段比较复杂，看例子|
 ```js
@@ -234,7 +230,7 @@ console.log(Number("123 123")) // NaN
 console.log(Number("foo")) // NaN 
 console.log(Number("100a")) // NaN
 ```
-如果通过 Number 转换函数传入一个字符串，它会试图将其转换成一个整数或浮点数，而且会忽略所有前导的 0，如果有一个字符不是数字，结果都会返回 NaN。鉴于这种严格的判断，我们一般还会使用更加灵活的 parseInt 和 parseFloat 进行转换。
+如果通过 Number 转换函数**传入一个字符串，它会试图将其转换成一个整数或浮点数，而且会忽略所有前导的 0**；如果**有一个字符不是数字，结果都会返回 NaN**。鉴于这种严格的判断，我们一般还会使用更加灵活的 `parseInt` 和 `parseFloat` 进行转换。
 - parseInt 只解析整数。如果字符串前缀是 "0x" 或者"0X"，会将其解释为十六进制数。
     ```js
     console.log(parseInt("0xFF")) // 255 
@@ -245,13 +241,13 @@ console.log(Number("100a")) // NaN
     console.log(parseFloat("3.14 abc")) // 3.14 
     console.log(parseFloat(".1")) // 0.1 
     ```
-- parseInt 和 parseFloat 都会跳过任意数量的前导空格，尽可能解析更多数值字符，并忽略后面的内容。如果第一个非空格字符是非法的数字直接量，将最终返回 NaN：
+- parseInt 和 parseFloat 都会**跳过任意数量的前导空格**，尽可能解析更多数值字符，并忽略后面的内容。如果**第一个非空格字符是非法的数字直接量，将最终返回 NaN**：
     ```js
     console.log(parseInt("3 abc")) // 3 
     console.log(parseInt("-12.34")) // -12 
     ```
 #### 原始值转字符串   
-我们使用 String 函数将类型转换成字符串类型。如果 String 函数不传参数，返回空字符串，如果有参数，隐式调用 ToString(value)。而 ToString 也给了一个对应的结果表，表如图：
+我们使用 `String函数` 将类型转换成字符串类型。如果 String 函数**不传参数，返回空字符串**，如果**有参数，隐式调用 ToString(value)**。而 ToString 也给了一个对应的结果表，表如图：
 |参数类型|结果|
 |:--:|:--:|
 |Undefined|"undefined"|
@@ -279,7 +275,7 @@ console.log(String(-Infinity)) // -Infinity
 console.log(String(1)) // 1
 ```
 #### 原始值转对象   
-原始值通过调用 String()、Number() 或者 Boolean() 构造函数，转换为它们各自的包装对象，（null 和 undefined 属于例外，当将它们用在期望是一个对象的地方都会造成一个类型错误 (TypeError) 异常，而不会执行正常的转换）。
+原始值通过调用 `String()`、`Number()` 或者 `Boolean()` 构造函数，转换为它们各自的包装对象，（`null` 和 `undefined` 属于例外，当将它们用在期望是一个对象的地方都会造成一个类型错误 (TypeError) 异常，而不会执行正常的转换）。
 ```js
 var b = new Number(a);  
 console.log(typeof b); // object
@@ -290,92 +286,90 @@ console.log(typeof b); // object
 console.log(Boolean(new Boolean(false))) // true
 ```
 #### 对象转字符串和数字   
-对象到字符串 和 对象到数字 的转换都是通过调用待转换对象的一个方法来完成的。而 JavaScript 对象有两个不同的方法来执行转换，一个是 toString，一个是 valueOf。注意这个跟上面所说的 ToString 和 ToNumber 是不同的，这两个方法是真实暴露出来的方法。
+对象到字符串 和 对象到数字 的转换都是通过调用待转换对象的一个方法来完成的。而 JavaScript 对象有两个不同的方法来执行转换，一个是 `toString`，一个是 `valueOf`。注意这个跟上面所说的 ToString 和 ToNumber 是不同的，这两个方法是真实暴露出来的方法。
 - 当调用对象的 toString 方法时，其实调用的是 Object.prototype 上的 toString 方法。
     - 然而 JavaScript 下的很多类根据各自的特点，定义了更多版本的 toString 方法。例如：
-    数组的 toString 方法将每个数组元素转换成一个字符串，并在元素之间添加逗号后合并成结果字符串。
-    ```js
-    console.log([].toString()) // "" 
-    console.log([0].toString()) // 0
-    console.log([1, 2, 3].toString()) // 1,2,3 
-    ```
+    - 数组的 toString 方法将每个数组元素转换成一个字符串，并在元素之间添加逗号后合并成结果字符串。
+        ```js
+        console.log([].toString()) // "" 
+        console.log([0].toString()) // 0
+        console.log([1, 2, 3].toString()) // 1,2,3 
+        ```
     - 函数的 toString 方法返回函数本身
-    ```js
-    console.log(({}).toString()) // [object Object]
-    console.log((function(){var a = 1;}).toString()) // function (){var a = 1;} 
-    ```
+        ```js
+        console.log(({}).toString()) // [object Object]
+        console.log((function(){var a = 1;}).toString()) // function (){var a = 1;} 
+        ```
     - 日期的 toString 方法返回一个可读的日期和时间字符串。
-    ```js
-    var date = new Date(2010, 0, 1);
-    console.log(date.toString()) // Fri Jan 01 2010 00:00:00 GMT+0800 (CST)
-    ```
+        ```js
+        var date = new Date(2010, 0, 1);
+        console.log(date.toString()) // Fri Jan 01 2010 00:00:00 GMT+0800 (CST)
+        ```
     - RegExp 的 toString 方法返回一个表示正则表达式直接量的字符串。
-    ```js
-    console.log((/\d+/g).toString()) // /\d+/g
-    ```
+        ```js
+        console.log((/\d+/g).toString()) // /\d+/g
+        ```
 - 而另一个转换对象的函数是 valueOf，表示对象的原始值。默认的 valueOf 方法返回这个对象本身，数组、函数、正则简单的继承了这个默认方法，也会返回对象本身。日期是一个例外，它会返回它的一个内容表示: 1970 年 1 月 1 日以来的毫秒数。
-```js
-var date = new Date(2017, 4, 21);
-console.log(date.valueOf()) // 1495296000000
-```
-
-#### 对象转字符串   
+    ```js
+    var date = new Date(2017, 4, 21);
+    console.log(date.valueOf()) // 1495296000000
+    ```
+1. 对象转字符串   
 对象到字符串是如何转换的，其实就是 ToString 方法的对应表，只是这次我们加上 Object 的转换规则：   
-|参数类型|结果|
-|:--:|:--|
-|Object|1.primValue = ToPrimitive(input, String)<br>2.返回ToString(primValue)|
+    |参数类型|结果|
+    |:--:|:--|
+    |Object|1.primValue = ToPrimitive(input, String)<br>2.返回ToString(primValue)|
 
-所谓的 ToPrimitive 方法，其实就是输入一个值，然后返回一个一定是基本类型的值。   
-- 函数语法表示如右：ToPrimitive(input[, PreferredType])
-    - 第一个参数是 input，表示要处理的输入值。
-        - 如果传入的 input 是 Undefined、Null、Boolean、Number、String 类型，直接返回该值。
-    - 第二个参数是 PreferredType，非必填，表示希望转换成的类型，有两个值可以选，Number 或者 String。
-        - 当不传入 PreferredType 时，如果 input 是日期类型，相当于传入 String，否则，都相当于传入 Number。
+    所谓的 ToPrimitive 方法，其实就是输入一个值，然后返回一个一定是基本类型的值。   
+    - 语法：ToPrimitive(input[, PreferredType])
+        - 第一个参数是 input，表示要处理的输入值。
+            - 如果传入的 input 是 Undefined、Null、Boolean、Number、String 类型，直接返回该值。
+        - 第二个参数是 PreferredType，非必填，表示希望转换成的类型，有两个值可以选，Number 或者 String。
+            - 当不传入 PreferredType 时，如果 input 是日期类型，相当于传入 String，否则，都相当于传入 Number。
 
 
-- 如果是 ToPrimitive(obj, Number)，处理步骤如下：   
-    - 如果 obj 为 基本类型，直接返回
-    - 否则，调用 valueOf 方法，如果返回一个原始值，则 JavaScript 将其返回。
-    - 否则，调用 toString 方法，如果返回一个原始值，则 JavaScript 将其返回。
-    - 否则，JavaScript 抛出一个类型错误异常。
+    - 如果是 ToPrimitive(obj, Number)，处理步骤如下：   
+        - 如果 obj 为 基本类型，直接返回
+        - 否则，调用 valueOf 方法，如果返回一个原始值，则 JavaScript 将其返回。
+        - 否则，调用 toString 方法，如果返回一个原始值，则 JavaScript 将其返回。
+        - 否则，JavaScript 抛出一个类型错误异常。
 
-- 如果是 ToPrimitive(obj, String)，处理步骤如下：   
-    - 如果 obj为 基本类型，直接返回
-    - 否则，调用 toString 方法，如果返回一个原始值，则 JavaScript 将其返回。
-    - 否则，调用 valueOf 方法，如果返回一个原始值，则 JavaScript 将其返回。
-    - 否则，JavaScript 抛出一个类型错误异常。
+    - 如果是 ToPrimitive(obj, String)，处理步骤如下：   
+        - 如果 obj为 基本类型，直接返回
+        - 否则，调用 toString 方法，如果返回一个原始值，则 JavaScript 将其返回。
+        - 否则，调用 valueOf 方法，如果返回一个原始值，则 JavaScript 将其返回。
+        - 否则，JavaScript 抛出一个类型错误异常。
 
-初次总结：当我们用 String 方法转化一个值的时候，如果是基本类型，就参照 “原始值转字符” 这一节的对应表，如果不是基本类型，我们会将调用一个 ToPrimitive 方法，将其转为基本类型，然后再参照“原始值转字符” 这一节的对应表进行转换。
+    初次总结：当我们用 String 方法转化一个值的时候，如果是基本类型，就参照 “原始值转字符” 这一节的对应表，如果不是基本类型，我们会将调用一个 ToPrimitive 方法，将其转为基本类型，然后再参照“原始值转字符” 这一节的对应表进行转换。
 
-最终总结：对象转字符串(就是 Number() 函数)可以概括为：
-- 如果对象具有 toString 方法，则调用这个方法。如果他返回一个原始值，JavaScript 将这个值转换为字符串，并返回这个字符串结果。
-- 如果对象没有 toString 方法，或者这个方法并不返回一个原始值，那么 JavaScript 会调用 valueOf 方法。如果存在这个方法，则 JavaScript 调用它。如果返回值是原始值，JavaScript 将这个值转换为字符串，并返回这个字符串的结果。
-- 否则，JavaScript 无法从 toString 或者 valueOf 获得一个原始值，这时它将抛出一个类型错误异常。
-
-#### 对象转数字   
+    最终总结：对象转字符串(就是 Number() 函数)可以概括为：
+    - 如果对象具有 toString 方法，则调用这个方法。如果他返回一个原始值，JavaScript 将这个值转换为字符串，并返回这个字符串结果。
+    - 如果对象没有 toString 方法，或者这个方法并不返回一个原始值，那么 JavaScript 会调用 valueOf 方法。如果存在这个方法，则 JavaScript 调用它。如果返回值是原始值，JavaScript 将这个值转换为字符串，并返回这个字符串的结果。
+    - 否则，JavaScript 无法从 toString 或者 valueOf 获得一个原始值，这时它将抛出一个类型错误异常。
+2. 对象转数字   
 其实，从对象到数字的转换也是一样：
-|参数类型|结果|
-|:--:|:--| 
-|Object|1.primValue = ToPrimitive(input, Number)<br>2.返回ToNumber(primValue)| 
+    |参数类型|结果|
+    |:--:|:--| 
+    |Object|1.primValue = ToPrimitive(input, Number)<br>2.返回ToNumber(primValue)| 
 
-**虽然转换成基本值都会使用 ToPrimitive 方法，但传参有不同，最后的处理也有不同 -> 转字符串调用的是 ToString，转数字调用 ToNumber。**
+    **虽然转换成基本值都会使用 ToPrimitive 方法，但传参有不同，最后的处理也有不同 -> 转字符串调用的是 ToString，转数字调用 ToNumber。**
 
-- 对象转数字的过程中，JavaScript 做了同样的事情，只是它会首先尝试 valueOf 方法。   
-    - 如果对象具有 valueOf 方法，且返回一个原始值，则 JavaScript 将这个原始值转换为数字并返回这个数字。
-    - 否则，如果对象具有 toString 方法，且返回一个原始值，则 JavaScript 将其转换并返回。
-    - 否则，JavaScript 抛出一个类型错误异常。
-```js
-console.log(Number({})) // NaN
-console.log(Number({a : 1})) // NaN
-console.log(Number([])) // 0
-console.log(Number([0])) // 0
-console.log(Number([1, 2, 3])) // NaN
-console.log(Number(function(){var a = 1;})) // NaN
-console.log(Number(/\d+/g)) // NaN
-console.log(Number(new Date(2010, 0, 1))) // 1262275200000
-console.log(Number(new Error('a'))) // NaN
-```
-- 注意，在以上代码块中，[] 和 [0] 都返回了 0，而 [1, 2, 3] 却返回了一个 NaN。我们分析一下原因：
+    - 对象转数字的过程中，JavaScript 做了同样的事情，只是它会首先尝试 valueOf 方法。   
+        - 如果对象具有 valueOf 方法，且返回一个原始值，则 JavaScript 将这个原始值转换为数字并返回这个数字。
+        - 否则，如果对象具有 toString 方法，且返回一个原始值，则 JavaScript 将其转换并返回。
+        - 否则，JavaScript 抛出一个类型错误异常。
+    ```js
+    console.log(Number({})) // NaN
+    console.log(Number({a : 1})) // NaN
+    console.log(Number([])) // 0
+    console.log(Number([0])) // 0
+    console.log(Number([1, 2, 3])) // NaN
+    console.log(Number(function(){var a = 1;})) // NaN
+    console.log(Number(/\d+/g)) // NaN
+    console.log(Number(new Date(2010, 0, 1))) // 1262275200000
+    console.log(Number(new Error('a'))) // NaN
+    ```
+    注意，在以上代码块中，[] 和 [0] 都返回了 0，而 [1, 2, 3] 却返回了一个 NaN。我们分析一下原因：
     - 当我们 Number([]) 的时候，先调用 [] 的 valueOf 方法，此时返回 []，因为返回了一个对象而不是原始值，所以又调用了 toString 方法，此时返回一个空字符串，接下来调用 ToNumber 这个规范上的方法，参照对应表，转换为 0, 所以最后的结果为 0。
     - 而当我们 Number([1, 2, 3]) 的时候，先调用 [1, 2, 3] 的 valueOf 方法，此时返回 [1, 2, 3]，再调用 toString 方法，此时返回 1,2,3，接下来调用 ToNumber，参照对应表，因为无法转换为数字，所以最后的结果为 NaN。
 
@@ -504,7 +498,7 @@ console.log([] == 0)
 ### 浮点数的存储
 **一个浮点数 (Value) 可以这样表示：Value = sign * exponent * fraction**
 - 比如 -1020，用科学计数法表示就是:-1 * 10^3 * 1.02
-    sign 就是 -1，exponent 就是 10^3，fraction 就是 1.02
+    - sign 就是 -1，exponent 就是 10^3，fraction 就是 1.02
 - 对于二进制也是一样，以 0.1 的二进制 0.00011001100110011…… 这个数来说，可以表示为：1 * 2^-4 * 1.1001100110011……
     - 其中 sign 就是 1，exponent 就是 2^-4，fraction 就是 1.1001100110011……
 
@@ -557,60 +551,52 @@ parseInt(1100100,2)
 ---
 
 ## var let const 区别使用
-### var 语句用于声明变量
-**变量声明的同时，可以赋值也可不赋值。**
+### var 
+**用于声明变量 ,变量声明的同时，可以赋值也可不赋值。**
 - 注意1：
     - 变量名可以包含字母，数字，下划线和美元符号。
     - 变量名必须以字母开头
     - 变量名也可以以$和_开头（但一般不这么用）
     - 变量名是大小写敏感的（y和Y是不同的变量）
     - 保留字（如JavaScript关键字）不能作为变量名使用
-- 注意2：
-    - var会发生“变量提升”现象。
+- 注意2：var会发生“变量提升”现象。
 
-### let命令，用来声明变量。
+### let
 **它的用法类似于var，但是所声明的变量，只在let命令所在的代码块内有效。**
-- 注意1：
-    - let不像var那样会发生“变量提升”现象。
-- 注意2：
-    - 只在声明所在的块级作用域内有效。
-- 注意3：
-    - let不允许在相同作用域内，重复声明同一个变量。
-       ```js
-        // 报错
-        function() {
-            let a = 10;
-            var a = 1;
-        }
-        // 报错
-        function() {
-            let a = 10;
-            let a = 1;
-        }
-        
-        // 报错
-        function func(arg) {
+- 注意1：let不像var那样会发生“变量提升”现象。
+- 注意2：只在声明所在的块级作用域内有效。
+- 注意3：let不允许在相同作用域内，重复声明同一个变量。
+    ```js
+    // 报错
+    function() {
+        let a = 10;
+        var a = 1;
+    }
+    // 报错
+    function() {
+        let a = 10;
+        let a = 1;
+    }
+    
+    // 报错
+    function func(arg) {
+        let arg; 
+    }
+    // 不报错
+    function func(arg) {
+        {
             let arg; 
         }
-        // 不报错
-        function func(arg) {
-            {
-                let arg; 
-            }
-        }
-       ```     
-    -因此，不能在函数内部重新声明参数。
+    }
+    ```     
+    因此，不能在函数内部重新声明参数。
 
-### const声明一个只读的常量。
-**一旦声明，常量的值就不能改变；且声明变量时，就必须立即初始化，不能留到以后赋值。**
-- 注意1：
-    - const的作用域与let命令相同：只在声明所在的块级作用域内有效。
-- 注意2：
-    - const命令声明的常量也是不提升，同样存在暂时性死区，只能在声明的位置后面使用。
-- 注意3：
-    - const声明的常量，也与let一样不可重复声明。
-- 注意4：
-    - 对于复合类型的变量，变量名不指向数据，而是指向数据所在的地址。**const命令只是保证变量名指向的地址不变，并不保证该地址的数据不变**，所以将一个对象声明为常量必须非常小心。   
+### const
+**声明一个只读的常量。一旦声明，常量的值就不能改变；且声明变量时，就必须立即初始化，不能留到以后赋值。**
+- 注意1：const的作用域与let命令相同：只在声明所在的块级作用域内有效。
+- 注意2：const命令声明的常量也是不提升，同样存在暂时性死区，只能在声明的位置后面使用。
+- 注意3：const声明的常量，也与let一样不可重复声明。
+- 注意4：对于复合类型的变量，变量名不指向数据，而是指向数据所在的地址。**const命令只是保证变量名指向的地址不变，并不保证该地址的数据不变**，所以将一个对象声明为常量必须非常小心。   
     栗子1：
     ```js
     const foo = {};
@@ -632,7 +618,8 @@ parseInt(1100100,2)
     // 上面代码中，常量a是一个数组，这个数组本身是可写的，但是如果将另一个数组赋值给a，就会报错。
     ```
 
-### 变量提升：把变量声明提升到当前执行环境的最顶端
+### 变量提升
+把变量声明提升到当前执行环境的最顶端
 ```js
 console.log(foo); // 输出undefined
 console.log(bar); // 报错ReferenceError
@@ -647,13 +634,13 @@ let bar = 2;
 ---  
 
 ## 执行上下文、词法作用域
-### 对于每个执行上下文，都有三个重要属性：
-1. **变量对象**(Variable object，VO)：是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明。   
+### 执行上下文的三个重要属性：
+1. **变量对象(Variable object，VO)**：是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明。   
 
     **因为不同执行上下文下的变量对象稍有不同，所以来理一下全局上下文下的变量对象和函数上下文下的变量对象。**
     - 全局上下文中的变量对象就是全局对象！
 
-        - 可以通过 this 引用，在客户端 JavaScript 中，全局对象就是 Window 对象。
+        - 可以用 this 引用，在客户端 JavaScript 中，全局对象就是 Window 对象。
         ```js
         console.log(this);
         ```
@@ -688,16 +675,16 @@ let bar = 2;
     - 1.进入执行上下文（当进入执行上下文时，这时候还没有执行代码）
         - 变量对象会包括：
             - 1）函数的所有形参 (如果是函数上下文)
-                由名称和对应值组成的一个变量对象的属性被创建
-                没有实参，属性值设为 undefined
+                - 由名称和对应值组成的一个变量对象的属性被创建
+                - 没有实参，属性值设为 undefined
 
             - 2）函数声明
-                由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建
-                如果变量对象已经存在相同名称的属性，则完全替换这个属性
+                - 由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建
+                - 如果变量对象已经存在相同名称的属性，则**完全替换**这个属性
 
             - 3）变量声明
-                由名称和对应值（undefined）组成一个变量对象的属性被创建；
-                如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性
+                - 由名称和对应值（undefined）组成一个变量对象的属性被创建；
+                - 如果变量名称跟已经声明的形式参数或函数相同，则变量声明**不会干扰**已经存在的这类属性
             
         举个栗子：
         ```js
@@ -722,7 +709,7 @@ let bar = 2;
             d:undefined
         }
         ```           
-        注意：在进入执行上下文时，首先会处理函数声明，其次会处理变量声明，如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。如下：
+        注意：在进入执行上下文时，**首先会处理函数声明，其次会处理变量声明**，如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。如下：
         ```js
         console.log(foo); // 1
         function foo() {
@@ -754,94 +741,99 @@ let bar = 2;
 
 2. **作用域链**   
 总结一下函数执行上下文中作用域链和变量对象的创建过程：
-```js
-var scope = "global scope";
-function checkscope() {
-    var scope2 = 'local scope';
-    return scope2;
-}
-checkscope();
-```
-- 1.checkscope 函数被创建，保存作用域链到 内部属性[[scope]]
-```js
-checkscope.[[scope]] = [
-    globalContext.VO
-];
-```
-- 2.执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
-```js
-ECSTACK = [
-    checkscopeContext,
-    globalContext
-];
-```
-**当执行到一个函数的时候，就会进行准备工作，这里的“准备工作”，用个更专业一点的说法，就叫做"执行上下文(execution context)"。**   
-接下来问题来了，我们写的函数多了去了，如何管理创建的那么多执行上下文呢？
-- 所以 JavaScript 引擎创建了执行上下文栈（Execution context stack，ECS）来管理执行上下文。当执行一个函数的时候，就会创建一个执行上下文，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出
-    - 试想当 JavaScript 开始要解释执行代码的时候，最先遇到的就是全局代码，所以初始化的时候首先就会向执行上下文栈压入一个全局执行上下文，我们用 globalContext 表示它，并且只有当整个应用程序结束的时候，ECStack 才会被清空，所以程序结束之前， ECStack 最底部永远有个 globalContext
+    ```js
+    var scope = "global scope";
+    function checkscope() {
+        var scope2 = 'local scope';
+        return scope2;
+    }
+    checkscope();
+    ```
+- ①由于先处理函数声明，于是checkscope 函数被创建，保存作用域链到 内部属性[[scope]]
+    ```js
+    checkscope.[[scope]] = [
+        globalContext.VO
+    ];
+    ```
+    > **当执行到一个函数的时候，就会进行准备工作，这里的“准备工作”，就叫做"执行上下文(execution context)"。**   
 
-- 3.checkscope 函数并不立刻执行，开始做准备工作，第一步：复制函数[[scope]]属性创建作用域链
-```js
-checkscopeContext = {
-    Scope:checkscope.[[scope]],
-}
-```
-Q：checkscope函数被创建时，保存到[[scope]]的作用域链 和 checkscope执行前的准备工作中，复制函数[[scope]]属性创建的作用域链有什么不同么？为什么会有两个作用域链？   
-A：①checkscope函数创建的时候，保存的是根据词法所生成的作用域链，checkscope执行的时候，会复制这个作用域链，作为自己作用域链的初始化，然后根据环境生成变量对象，然后将这个变量对象，添加到这个复制的作用域链，这才完整的构建了自己的作用域链。   
-②至于为什么会有两个作用域链，是因为在函数创建的时候并不能确定最终的作用域的样子，为什么会采用复制的方式而不是直接修改呢？应该是因为函数会被调用很多次吧。
+    > Q：接下来问题来了，我们写的函数多了去了，如何管理创建的那么多执行上下文呢？   
+    A1：所以 JavaScript 引擎创建了`执行上下文栈（Execution context stack，ECS）`来管理执行上下文。   
+    A2：当执行一个函数的时候，就会创建一个执行上下文，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出  
+    A3：试想当 JavaScript 开始要解释执行代码的时候，最先遇到的就是全局代码，所以初始化的时候首先就会向执行上下文栈压入一个全局执行上下文，我们用 globalContext 表示它，并且只有当整个应用程序结束的时候，ECStack 才会被清空，所以程序结束之前， ECStack 最底部永远有个 globalContext
+    
+- ②执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈
+    ```js
+    ECStack = [
+        checkscopeContext,
+        globalContext
+    ];
+    ```
 
-- 4.第二步：用 arguments 创建活动对象，随后初始化活动对象，加入形参、函数声明、变量声明
-```js
-checkscopeContext = {
-    AO: {
-        arguments:{
-            length:0
+- ③checkscope 函数并不立刻执行，开始做准备工作，第一步：复制函数[[scope]]属性创建作用域链
+    ```js
+    checkscopeContext = {
+        Scope:checkscope.[[scope]],
+    }
+    ```
+    > Q1：checkscope函数被创建时保存到[[scope]]的作用域链， 和 checkscope执行前的准备工作中复制函数[[scope]]属性创建的作用域链有什么不同？   
+    A1：checkscope函数创建的时候，保存的是根据词法所生成的作用域链。checkscope执行的时候，会复制这个作用域链，作为自己作用域链的初始化，然后根据环境生成变量对象，然后将这个变量对象，添加到这个复制的作用域链，这才完整的构建了自己的作用域链。  
+
+    > Q2：为什么会有两个作用域链？    
+    A2：因为在函数创建的时候并不能确定最终的作用域的样子。而为什么会采用复制的方式而不是直接修改呢？应该是因为函数会被调用很多次吧。
+
+- ④第二步：用 arguments 创建活动对象，随后初始化活动对象，加入形参、函数声明、变量声明
+    ```js
+    checkscopeContext = {
+        AO: {
+            arguments:{
+                length:0
+            },
+            scope2:undefined
         },
-        scope2:undefined
-    },
-    Scope:checkscope.[[scope]],
-}
-```
-- 5.第三步：将活动对象压入checkscope 作用域顶端
-```js
-checkscopeContext = {
-    AO: {
-        arguments:{
-            length:0
+        Scope:checkscope.[[scope]],
+    }
+    ```
+- ⑤第三步：将活动对象压入checkscope 作用域顶端
+    ```js
+    checkscopeContext = {
+        AO: {
+            arguments:{
+                length:0
+            },
+            scope2:undefined
         },
-        scope2:undefined
-    },
-    Scope:[AO, [[Scope]]]
-}
-```
-- 6.准备工作做完，开始执行函数，随着函数的执行，修改 AO 的属性值
-```js
-checkscopeContext = {
-    AO: {
-        arguments:{
-            length:0
+        Scope:[AO, [[Scope]]]
+    }
+    ```
+- ⑥准备工作做完，开始执行函数，随着函数的执行，修改 AO 的属性值
+    ```js
+    checkscopeContext = {
+        AO: {
+            arguments:{
+                length:0
+            },
+            scope2:'local scope'
         },
-        scope2:'local scope'
-    },
-    Scope:[AO, [[Scope]]]
-}
-```
-- 7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出
-```js
-ECStack = [
-    globalContext
-];
-```
+        Scope:[AO, [[Scope]]]
+    }
+    ```
+- ⑦查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出
+    ```js
+    ECStack = [
+        globalContext
+    ];
+    ```
 
 3. this   
 
+Reference 类型与 this 的指向有着密切的关联，在深入 this 的学习前，我们有必要了解一下 Reference。   
 Reference 的构成，有三个组成部分，分别是：
 - base value
-    - base value 就是属性所在的对象或者就是 EnvironmentRecord，它的值只可能是 undefined, an Object, a Boolean, a String, a Number, or an environment record 其中的一种。
-- referenced name
-    - referenced name 就是属性的名称。
+    - base value 就是属性所在的对象或者就是 EnvironmentRecord，它的值只可能是 `undefined`， an `Object`， a `Boolean`， a `String`， a `Number`， an `environment record` 其中的一种。
+- referenced name（属性的名称）
 - strict reference
-
+- 
 栗子1：
 ```js
 var foo = 1;
@@ -869,35 +861,28 @@ var BarReference = {
     strict:false
 };
 ```
-规范中还提供了获取 Reference 组成部分的方法，比如 GetBase 和 IsPropertyReference。
-- GetBase
-    - GetBase(V). Returns the base value component of the reference V.
-    - 指的是：返回 reference 的 base value。
-- IsPropertyReference
-    - IsPropertyReference(V). Returns true if either the base value is an object or HasPrimitiveBase(V) is true; otherwise returns false.
-    - 指的是：如果 base value 是一个对象，就返回true。
-
-从 Reference 类型获取对应值的方法： GetValue。
-```js
-var foo = 1;
-var fooReference = {
-    base:EnvironmentRecord,
-    name:'foo',
-    strict:false
-};
-GetValue(fooReference) // 1
-```
-- GetValue 返回对象属性真正的值，但是要注意：调用 GetValue，返回的将是具体的值，而不再是一个 Reference。这个很重要，这个很重要，这个很重要。
-
+规范中提供了获取 Reference 组成部分的方法，比如 GetBase 和 IsPropertyReference。
+- GetBase：返回 reference 的 base value。
+- IsPropertyReference：如果 base value 是一个对象，就返回true。
+- GetValue：从 Reference 类型获取对应值，返回对象属性真正的值。但是要注意：调用 GetValue，返回的将是具体的值，而不再是一个 Reference（重点敲黑板）。
+    ```js
+    var foo = 1;
+    var fooReference = {
+        base:EnvironmentRecord,
+        name:'foo',
+        strict:false
+    };
+    GetValue(fooReference) // 1
+    ```
 如何确定this的值：
 - 1.计算 MemberExpression 的结果赋值给 ref
-    - 什么是 MemberExpression？
-        - PrimaryExpression // 原始表达式 
-        - FunctionExpression // 函数定义表达式
-        - MemberExpression [ Expression ] // 属性访问表达式
-        - MemberExpression . IdentifierName // 属性访问表达式
-        - new MemberExpression Arguments // 对象创建表达式
-        - 例子：
+    > Q：什么是 MemberExpression？  
+    A1：PrimaryExpression // 原始表达式   
+    A2：FunctionExpression // 函数定义表达式  
+    A3：MemberExpression [ Expression ] // 属性访问表达式  
+    A4：MemberExpression. IdentifierName // 属性访问表达式  
+    A5：new MemberExpression Arguments // 对象创建表达式
+    - 例子：
         ```js
         function foo() {
             console.log(this)
@@ -923,9 +908,10 @@ GetValue(fooReference) // 1
 
 - 2.判断 ref 是不是一个 Reference 类型   
 关键就在于看规范是如何处理各种 MemberExpression，返回的结果是不是一个Reference类型。
-    - 2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref) 是 true, 那么 this 的值为 GetBase(ref)
-    - 2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)
-    - 2.3 如果 ref 不是 Reference，那么 this 的值为 undefined
+    - 2.1 判断 MemberExpression 是不是 Reference类型，需要根据规范来确定
+    - 2.2 如果 ref 是 Reference，并且 IsPropertyReference(ref) 是 true, 那么 this 的值为 GetBase(ref)
+    - 2.3 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)
+    - 2.4 如果 ref 不是 Reference，那么 this 的值为 undefined
 
     ```js
     var value = 1;
@@ -1083,7 +1069,11 @@ ECStack = {
 };
 ```
 
-### JavaScript 采用的是词法作用域（也就是静态作用域），函数的作用域在函数定义的时候就决定了；而与词法作用域相对的是动态作用域，函数的作用域是在函数调用的时候才决定的。
+---
+
+## 原型链、作用域
+### 作用域
+JavaScript 采用的是词法作用域（也就是静态作用域），函数的作用域在函数定义的时候就决定了；而与词法作用域相对的是动态作用域，函数的作用域是在函数调用的时候才决定的。
 ```js
 var value = 1;
 function foo() {
@@ -1102,12 +1092,9 @@ bar();
 - 假设JavaScript采用动态作用域，让我们分析下执行过程：
     - 执行 foo 函数，依然是从 foo 函数内部查找是否有局部变量 value。如果没有，就从调用函数的作用域，也就是 bar 函数内部查找 value 变量，所以结果会打印 2。
 - 由于JavaScript采用的是静态作用域，所以这个例子的结果是 1。
-
----
-
-## 原型链、作用域
-### 图中由相互关联的原型组成的链状结构就是原型链，也就是蓝色的这条线。
-![原型链中的各种关系](../img/03.png)  
+### 原型链
+图中由相互关联的原型组成的链状结构就是原型链，也就是蓝色的这条线。
+![原型链中的各种关系](img/03.png)  
 1. constructor
 ```js
 function Person() {}
