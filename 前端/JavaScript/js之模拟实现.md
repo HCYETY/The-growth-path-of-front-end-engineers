@@ -1,9 +1,66 @@
+## 实践：函数柯里化
+接收函数作为参数的函数，都可以叫做高阶函数。柯里化，其实就是高阶函数的一种特殊用法。  
+柯里化（Currying），是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。如：
+```js
+// 普通的 add 函数
+function add(x, y) {
+    return x + y
+}
+
+// Currying 后
+function curryingAdd(x) {
+    return function(y) {
+        return x + y
+    }
+}
+
+add(1, 2);         // 3
+curryingAdd(1)(2); // 3
+```
+作用：简化代码结构，提高系统的维护性，一个方法，只有一个参数，强制了功能的单一性，很自然就做到了功能内聚，降低耦合。
+### 代码实现：
+```js
+function add(...arg) {
+    // 第一次执行时，定义一个数组专门用来存储所有的参数
+    var args = Array.prototype.slice.call(arguments);
+
+    // 在内部声明一个函数，利用闭包的特性保存args并收集所有的参数值
+    var _adder = function() {
+        args.push(...arguments);
+        return _adder;
+    }
+
+    // var arr = [...arg];
+    // console.log(arr);
+    // var _adder = function(...arg1) {
+    //     // var arg1 = [...arg1];
+    //     // console.log(arg1)
+    //     arr.push(...arg1);
+    //     console.log(arr);
+    //     return _adder;
+    // }
+
+    // 利用隐式转换的特性，当最后执行时隐式转换，并计算最终的值返回
+    _adder.toString = function() {
+        return args.reduce(function(a, b) {
+            return a + b;
+        });
+    }
+
+    return _adder;
+}
+// console.log( add(1)(2)(3)(4) );   // f 10
+// console.log( add(1, 2, 3, 4) );   // f 10
+// console.log( add(1, 2)(3, 4) );   // f 10
+console.log( add(1, 2, 3)(4) );   // f 10
+```
 ## 实现一个 instanceof 函数
 ### 语法：a instanceof b
 - a：某个实例对象；b：某个构造函数
-- instanceof 运算符用于检测 b.prototype 是否存在于参数 a的原型链上。
-- instanceof函数用来判断一个对象是否为一个对象的实例。
-### 代码实现：（getPrototypeOf：获取某个实例对象的原型）
+- instanceof 运算符用于检测 b.prototype 是否存在于参数 a的原型链上。  
+- instanceof函数用来判断一个对象是否为某个函数的实例。
+- 综上，只需要循环去取 a 的原型，然后同 b 的原型比较即可
+### 代码实现：
 ```js
 function Person() { // 构造函数
     this.name = "siyang";
@@ -12,35 +69,103 @@ let p = new Person(); // 实例
 console.log(p.name); // siyang
 
 function myInstanceof(a, b) {
-    let proto = Object.getPrototypeOf(a);
+    let _a = a.__proto__;
+    let _b = b.prototype;
     while(true) {
-        if(proto === b.prototype) return true;
-        if(!proto) return false;
-        proto = Object.getPrototypeOf(proto);
+        if(_a === _b) return true;
+        if(!_a) return false;
+        _a = _a.__proto__;
     }
 }
 console.log(myInstanceof(p, Object)); // true
 console.log(myInstanceof(p, Array)); // false
 ```
-## 模拟实现 call、apply、bind 函数
-### call和apply的
-apply
+## 模拟实现 new 函数
+### new 的原理
+1. 创建一个新对象
+2. 新对象的原型指向构造函数的原型--->继承构造函数的方法
+3. 构造函数内部的this被赋值为这个新对象（即this指向新对象）
+4. 执行构造函数内部的代码（即给新对象添加属性）
+5. 如果构造函数返回非空对象，则返回该对象；否则，返回刚创建的新对象
+### 代码实现
 ```js
-// apply函数模拟思路
+function create_new(fn) {
+    // 如果 fn 不能作为构造函数，则抛出 TypeError 异常
+    if(typeof fn !== 'function'){
+        throw `${fn} must be a function`;
+    }
+
+    const obj = Object.create(fn.prototype);
+    // 等价于 
+    // var obj = new Object ();
+    // var constructor = Array.prototype.shift.call(arguments);
+    // obj._proto_ = constructor.prototype;
+    // 注意：用这种方法的话是不用给create_new()传参的
+
+    var result = fn.apply(obj, [...arguments].slice(1));
+
+    // 确保构造器总是返回一个对象
+    const isObject = typeof result === 'object' && result !== null;
+    const isFunction = typeof result === 'function';
+	return (isObject || isFunction) ? result : obj;
+}
+
+function person(name, age) {
+    this.name = name;
+}
+person.prototype.color = 'red';
+person.prototype.sayHi = function() {
+    console.log("Hello " + this.name);
+}
+
+let child = create_new(person, 'siyang');
+console.log(child.name); // siyang
+console.log(child.color); // red
+child.sayHi(); // Hello siyang
+```
+> 更加深入请参考：[模拟实现 new 操作符(js)](https://www.jianshu.com/p/5541477481bd)
+## 模拟实现 call、apply、bind 函数
+### call
+```js
+// call函数模拟思路
+Function.prototype.simulate_call = function(context, ...arg) {
+    // 7.假如this参数为null，视为指向window
+    context = context || window;
+    // 1.考虑到对象本身已经有同名的方法，使用Symbol保证不出现同名的属性
+    const fn = Symbol('fn');
+    // 2.改变this的指向
+    context[fn] = this;
+    // 3.执行函数 + 5.把参数数组放到要执行的函数的参数里
+    const result = context[fn](...arg);
+    // 4.删除函数
+    delete context[fn];
+    // 6.函数是可以有返回值的
+    return result;
+}
+
+var foo = {
+    value:1
+};
+function bar(name, age) {
+    console.log(this.value);
+    return{
+        value:this.value,
+        name:name,
+        age:age
+    }
+}
+bar.simulate_call(foo, 'siyang', '19');
+```
+### apply
+```js
+// apply函数模拟思路：与call只有一个传参不同的差别
 Function.prototype.simulate_apply = function(context, arr) {
     var context = context || window;
-    context.fn = this;
-    var result;
-    if(!arr) {
-        result = context.fn();
-    } else {
-        var args = [];
-        for(let i=0; i<arr.length; i++) {
-            args.push('arr['+i+']');
-        }
-        result = eval('context.fn('+args+')');
-    }
-    delete context.fn;
+    const fn = Symbol('fn');
+    context[fn] = this;
+    // 这里要将数组展开，散列传参
+    var result = context[fn](...arr);
+    delete context[fn];
     return result;
 }
 var foo = {
@@ -54,70 +179,42 @@ function bar(name, age) {
         age:age
     }
 }
-console.log(bar.simulate_apply(foo, ['hcy', '20']));
+bar.simulate_apply(foo, ['hcy', '20']);
 ```
-call
-```js
-// call函数模拟思路
-Function.prototype.simulate_call = function(context) {
-    // 6.假如this参数为null，视为指向window
-    context = context || window;
-    // 1.改变this的指向
-    context.fn = this;
-    // 4.用数组存放不定长的参数
-    var args = [];
-    for(let i=1; i<arguments.length; i++) {
-        args.push('arguments['+i+']');
-    }
-    // 2.执行函数 + 5.把参数数组放到要执行的函数的参数里
-    var result = eval('context.fn('+args+')');
-    // 3.删除函数
-    delete context.fn;
-    // 7.函数是可以有返回值的
-    return result;
-}
-var foo = {
-    value:1
-};
-function bar(name, age) {
-    console.log(this.value);
-    return{
-        value:this.value,
-        name:name,
-        age:age
-    }
-}
-console.log(bar.simulate_call(foo, 'siyang', '19'));
-```
-bind
-- bind() 方法会创建一个新函数。当这个新函数被调用时，bind() 的第一个参数将作为它运行时的 this，之后的一序列参数将会在传递的实参前传入作为它的参数。(来自于 MDN )
-- bind 函数的三个特点：
-    - 返回一个函数
-    - 可以传入参数
-    - 一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this值被忽略，同时调用时的参数被提供给模拟函数。
+### bind  
+该方法会创建一个新函数。当这个新函数被调用时，bind() 的第一个参数将作为它运行时的 this，之后的一序列参数将会在传递的实参前传入作为它的参数。
+- bind 函数的特点：
+    - 可以指定this。
+    - 返回一个可以传参的新函数，需要再次调用新函数才能达到最终执行
+    - 支持函数柯里化。
+    - 返回的这个绑定了this的新函数，之后this无法再被修改
 ```js
 // bind函数模拟思路
-Function.prototype.simulate_bind = function(context) {
+Function.prototype.simulate_bind = function(context, ...arg) {
     if (typeof this !== "function") {
         throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
     }
-    var _this = this;
-    // 获取 simulate_bind函数 从第二个参数到最后一个参数，转换成一个正式数组
-    var args = Array.prototype.slice.call(arguments, 1);
 
-    var fNOP = function () {};
-
-    // bind函数特点之一：返回一个函数
-    var fBound = function() {
-        // 这个时候的arguments是指bind返回的函数传入的参数
-        var bindArgs = Array.prototype.slice.call(arguments);
-        // 之所以return，是考虑到绑定函数可能是有返回值的
-        return _this.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
-    }
+    // 提前保存，表示调用 bind 的函数（也就是bar函数）。否则在执行 bindFoo 时内部 this 会指向 window
+    let _this = this;
+    // console.log(this); // f bar(name, age) {...}
     
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
-    return fBound;
+    // 匿名函数里传入另外的参数，实现柯里化
+    let fn = function(...arg1) {
+        // 如果是new调用，this会指向实例，执行环境就为实例
+        // 如果是普通函数调用，this会指向window，执行环境为最初的context
+        // console.log(this);
+        // console.log(this instanceof fn);
+        context = this instanceof fn ? this : context;
+        return _this.apply(context, arg.concat(arg1)); // 用concat()将两次传参合并
+    }
+
+    // 若返回的函数作为构造函数时，实例要继承原先绑定函数的属性方法。这里用空函数充当中间代理，通过原型链就可以实现继承
+    var empty = function () {};
+    empty.prototype = this.prototype;
+    fn.prototype = new empty();
+
+    return fn;
 }
 
 var foo = {
@@ -130,4 +227,179 @@ function bar(name, age) {
 }
 var bindFoo = bar.simulate_bind(foo, 'siyang');
 bindFoo('19');
+var text = new bindFoo("@hg");
+```
+> bind的模拟实现参考：  
+> [@听风是风 的文章](https://www.cnblogs.com/echolun/p/12178655.html)  
+> [@DangoSky 的博客](http://blog.dangosky.com/2019/03/28/JS%E4%B9%8B%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0/#toc-heading-4)
+## 模拟实现防抖和节流函数
+### 防抖
+```html
+<div id="container">防抖</div>
+<button id="button">取消防抖</button>
+```
+```css
+#container{
+    width: 100%;
+    height: 100px;
+    border: 1px solid black;
+    background-color: skyblue;
+    font-size:
+}
+```
+```js
+function debounce(fn, wait, immediate) {
+    let time = null;
+
+    let debounced = function(...args) {
+        // 将 this 指向当前绑定监听函数的 DOM 对象
+        let _this = this;
+        // console.log(_this)
+
+        // 以新的事件的时间为准，更新时间，n秒后才执行
+        if(time) {
+            clearTimeout(time);
+        }
+
+        // 事件触发的时候立刻执行 fn ，再防抖
+        if(immediate) {
+            if(!time) {
+                fn.apply(_this, args);
+            }
+            time = setTimeout(function() {
+                time = null;
+            }, wait)
+        } else {
+            time = setTimeout(function() {
+                fn.apply(_this, args);
+            }, wait);
+        }
+    };
+
+    // 另一个需求：希望有一个按钮，点击后，取消防抖，这样再去触发的时候，就可以又立刻执行
+    debounced.cancel = function() {
+        clearTimeout(time);
+        time = null;
+    };
+
+    return debounced;
+}
+                
+var count = 1;
+var container = document.getElementById("container");
+function getUserAction() {
+    container.innerHTML = count++;
+};
+var setUserAction = debounce(getUserAction, 1000, true);
+container.onmousemove = setUserAction;
+document.getElementById("button").addEventListener('click', function() {
+    setUserAction.cancel();
+})
+```
+### 节流
+函数节流的两种方法
+  - 时间戳：只要触发，就用 Date 获取现在的时间，与上一次的时间比较。
+      ```js
+      function rottle(func, wait) {
+          var previous = 0;
+
+          return function(...args) {
+              var now = +new Date();
+              // 如果时间差大于规定的等待时间，就可以执行一次
+              // 目标函数执行以后，就更新 previous 值，确保它是“上一次”的时间
+              // 否则就等下一次触发时继续比较。
+              if(now - previous > wait) {
+                  func.apply(this, args);
+                  previous = now;
+              }
+          }
+      }
+      ```
+  - 定时器：当触发事件的时候，我们设置一个定时器。再触发事件的时候，如果定时器存在，就不执行；直到定时器执行后，执行函数，清空定时器，这样就可以设置下个定时器。
+      ```js
+      function throttle(func, wait) {
+          var timeout = null;
+
+          return function(...args) {
+              let context = this;
+              if(!timeout) {
+                  timeout = setTimeout(function() {
+                      timeout = null;
+                      func.apply(context, args);
+                  }, wait)
+              }
+          }
+      }
+      ```
+  - 比较两个方法：
+      - 时间戳事件会立刻执行，定时器事件会在 n 秒后第一次执行
+      - 时间戳事件停止触发后没有办法再执行事件，定时器事件停止触发后依然会再执行一次事件
+  
+时间戳和定时器的结合（可实现 有头有尾、有头无尾、无头有尾 三种形式）  
+有头有尾：鼠标移入能立刻执行，停止触发的时候还能再执行一次；  
+有头无尾：鼠标移入能立刻执行，停止触发后不再执行；  
+无头无尾：鼠标移入不能立刻执行，停止触发后不再执行；
+```js
+function throttle(fn, wait, options) {
+    let time = null, previous = 0;
+
+    // 根据传的值判断要有头无尾还是无头有尾
+    // leading：false 表示禁用第一次执行（无头有尾）
+    // trailing: false 表示禁用停止触发的回调（有头无尾）
+    if(!options) {
+        // 代表要执行有头有尾
+        options = {
+            leading：true;
+            trailing: true;
+        };
+    }
+
+    let throttled = function(...args) {
+        let _this = this;
+        let now = new Date().getTime();
+        // 无头有尾的准备工作
+        if(!previous && options.leading===false) {
+            previous = now;
+        }
+        let remaining = wait - (now - previous);
+        // 有头的代码：即时间戳
+        // 如果没有剩余的时间了或者你改了系统时间
+        if(remaining<=0 || remaining>wait) {
+            if(time) {
+                clearTimeout(time);
+                time = null;  // 设置为null，让定时器可以启动
+            }
+            previous = now;  // 及时更新时间戳
+            fn.apply(_this, args);
+            // if(!time) context = args = null;
+        } 
+        // 有尾的代码：即定时器
+        else if(!time && options.trailing!==false) {
+            time = setTimeout(() {
+                previous = 0;
+                time = null;
+                fn.apply(_this, args);
+                // if(!time) context = args = null;
+            }, remaining);
+        }
+    };
+
+    throttled.cancel = function() {
+        clearTimeout(time);
+        time = null;
+        previous = 0;
+    }
+
+    return throttled;
+}
+
+var count = 1;
+var container = document.getElementById("container");
+function getUserAction() {
+    container.innerHTML = count++;
+};
+// leading:false 表示禁用第一次执行
+// trailing:false 表示禁用停止触发的回调
+var setUserAction = throttle(getUserAction, 1000, {leading:false});
+container.onmousemove = setUserAction;
 ```

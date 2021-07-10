@@ -21,13 +21,13 @@
 ### css 选择器
 - 关于css属性选择器常用的有以下这些：
     ```css
-    id选择器（#box），选择id为box的元素
-    类选择器（.one），选择类名为one的所有元素
-    标签选择器（div），选择标签为div的所有元素
-    后代选择器（#box div），选择id为box元素内部所有的div元素
-    子选择器（.one>one_1），选择父元素为.one的所有.one_1的元素
-    相邻同胞选择器（.one+.two），选择紧接在.one之后的所有.two元素
-    群组选择器（div,p），选择div、p的所有元素
+    id选择器（#box） -->选择id为box的元素
+    类选择器（.one） -->选择类名为one的所有元素
+    标签选择器（div） -->选择标签为div的所有元素
+    后代选择器（#box div） -->选择id为box元素内部所有的div元素
+    子选择器（.one>one_1） -->选择父元素为.one的所有.one_1的元素
+    相邻同胞选择器（.one+.two） -->选择紧接在.one之后的所有.two元素
+    群组选择器（div,p） -->选择div、p的所有元素
     ```
 - 还有一些使用频率相对没那么多的选择器：
     - 伪类选择器
@@ -163,7 +163,8 @@ display
 
 box-sizing
 - 语法：content-box | border-box | inherit
-    - content-box	默认值，W3C盒子模型（标准盒模型）。盒子宽高是 content(内容) 的宽高。如果设置一个元素的宽为100px，那么这个元素的内容区会有100px宽，并且任何边框和内边距的宽度都会被增加到最后绘制出来的元素（盒子）宽度中。
+    - content-box  
+    默认值，W3C盒子模型（标准盒模型）。盒子宽高是 content(内容) 的宽高。
         ```css
         .test1{
             box-sizing:content-box;
@@ -172,8 +173,9 @@ box-sizing
             border:15px solid #eee;
         }
         ```
-        ![](img/21.png)
-    - border-box	IE盒模型（怪异盒模型）。盒子宽高是 border + padding + content 的宽高。如果将一个元素的width设为100px,那么这100px会包含其它的border和padding，内容区的实际宽度会是width减去border + padding的计算值。
+        ![](../img/21.png)
+    - border-box  
+    IE盒模型（怪异盒模型）。盒子宽高是 border + padding + content 的宽高。
         ```css
         .test1{
             box-sizing:border-box;
@@ -182,8 +184,9 @@ box-sizing
             border:15px solid #eee;
         }
         ```
-        ![](img/22.png) 
-        inherit 规定应从父元素继承 box-sizing 属性的值。
+        ![](../img/22.png) 
+
+    - inherit 规定应从父元素继承 box-sizing 属性的值。
 ### 脱离文档流 
 浏览器默认的排版方式就是文档流(或者叫标准流)排版方式：块级元素垂直排布，行内元素和行内块级水平排布。  
 
@@ -191,10 +194,11 @@ box-sizing
 
 脱离文档流就是不按照文档流的排版方式。  
 - 元素脱离文档流之后，将不再在文档流中占据空间，而是处于浮动状态。脱离文档流的元素的定位基于正常的文档流，当一个元素脱离文档流后，依然在文档流中的其他元素将忽略该元素并填补其原先的空间。  
-    ![](img/23.png)   
-    ![](img/24.png)   
-    ![](img/25.png)   
-    ![](img/26.png)   
+    ![](../img/23.png)   
+    ![](../img/24.png)   
+    ![](../img/25.png)   
+    ![](../img/26.png)   
+    ![](../img/27.png)   
     div2被div1给覆盖了！因为脱离文档流的div1不占据页面的空间了，所以才会留有空间给后面的div补上，当然这也导致了div2给div1覆盖了！
 - 目前常见的会影响元素脱离文档流的css属性有：
     - ①float浮动;
@@ -210,13 +214,13 @@ box-sizing
 元素相对于屏幕视口（viewport）的位置来发生偏移, 元素的位置在屏幕滚动时不会改变。这一点与 absolute 不同，absolute 在屏幕滚动时会跟着一起滚动
 - sticky   
 可以被认为是 relative 和 fixed 的混合，元素在跨越特定阈值前为相对定位，之后为固定定位： sticky 会让元素在页面滚动时如同在正常流中（relative定位），但当滚动到特定位置时就会固定在屏幕上如同 fixed 
-    - sticky定位的阈值是相对它的最近滚动祖先来定义的，而 sticky 的作用区域也是它的第一个非static父元素内，也就是说粘性布局的效果只在该父元素内表现出来。
+    > sticky定位的阈值是相对它的最近滚动祖先来定义的，而 sticky 的作用区域也是它的第一个非static父元素内，也就是说粘性布局的效果只在该父元素内表现出来。
 ### BFC
 1. 在解释什么是BFC之前，我们需要先知道Box、Formatting Context的概念：
     - Box：css布局的基本单位
-      - Box 是 CSS 布局的对象和基本单位， 直观点来说，就是一个页面是由很多个 Box 组成的。元素的类型和 display 属性，决定了这个 Box 的类型。 不同类型的 Box， 会参与不同的 Formatting Context（一个决定如何渲染文档的容器），因此Box内的元素会以不同的方式渲染。有三种盒子：
-        - block-level box:display 属性为 block, list-item, table 的元素，会生成 block-level box。并且参与 block fomatting context；
-        - inline-level box:display 属性为 inline, inline-block, inline-table 的元素，会生成 inline-level box。并且参与 inline formatting context；
+      - 直观点来说，就是一个页面是由很多个 Box 组成的。元素的类型和 display 属性，决定了这个 Box 的类型。 不同类型的 Box， 会参与不同的 Formatting Context（一个决定如何渲染文档的容器），因此Box内的元素会以不同的方式渲染。有三种盒子：
+        - block-level box：display 属性为 block, list-item, table 的元素，会生成 block-level box。并且参与 block fomatting context；
+        - inline-level box：display 属性为 inline, inline-block, inline-table 的元素，会生成 inline-level box。并且参与 inline formatting context；
         - run-in box: css3 中才有
     - Formatting Context
       - 它是页面中的一块渲染区域，并且有一套渲染规则，它决定了其子元素将如何定位，以及和其他元素的关系和相互作用。最常见的 Formatting context 有 Block fomatting context (简称BFC)和 Inline formatting context (简称IFC)。
