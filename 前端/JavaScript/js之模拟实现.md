@@ -1,3 +1,121 @@
+    目录
+- [实现一个深拷贝函数](#实现一个深拷贝函数)
+  - [实现深拷贝需要考虑几个因素：](#实现深拷贝需要考虑几个因素)
+  - [代码实现](#代码实现)
+- [实践：函数柯里化](#实践函数柯里化)
+  - [代码实现：](#代码实现-1)
+- [实现一个 instanceof 函数](#实现一个-instanceof-函数)
+  - [语法：a instanceof b](#语法a-instanceof-b)
+  - [代码实现：](#代码实现-2)
+- [模拟实现 new 函数](#模拟实现-new-函数)
+  - [new 的原理](#new-的原理)
+  - [代码实现](#代码实现-3)
+- [模拟实现 call、apply、bind 函数](#模拟实现-callapplybind-函数)
+  - [call](#call)
+  - [apply](#apply)
+  - [bind](#bind)
+- [模拟实现防抖和节流函数](#模拟实现防抖和节流函数)
+  - [防抖](#防抖)
+  - [节流](#节流)
+
+==========
+
+    正文
+
+==========
+## 实现一个深拷贝函数
+### 实现深拷贝需要考虑几个因素：
+- 传入的对象是使用对象字面量{}创建的对象，还是由构造函数生成的对象
+- 如果对象是由构造函数创建出来的，那么是否要拷贝原型链上的属性
+- 如果要拷贝原型链上的属性，那么如果原型链上存在多个同名的属性，保留哪个
+- 处理循环引用的问题
+### 代码实现
+```js
+// 原生js中递归函数拷贝
+function deepCopy(obj) {
+    // 定义一个变量接收新对象
+    var newObj = null;
+
+    if(obj instanceof Array) {
+        newObj = [];
+        // 复制法一
+        for(let index in obj) {
+            var prop = obj[index]; 
+            if (prop == obj) {
+                continue;
+            }
+            // callee, 该属性是一个指针，指向拥有这个 arguments 对象的函数,相当于deepCopy(),即递归调用自身;有利于降低代码的耦合度（如果更换函数名，也可正常递归，不受其他代码影响）
+            newObj.push(arguments.callee(obj[index]));
+            // newObj.push(deepCopy(obj[index]));
+        }
+        // 复制法二
+        // obj.forEach(item => {
+        //     newObj = arguments.callee(item);
+        // });
+    } else if(obj instanceof Object) {
+        newObj = {};
+        for(let index in obj) {
+            newObj[index] = arguments.callee(obj[index]);
+            // newObj[index] = deepCopy(obj[index]);
+        }
+    } else {
+        newObj = obj;
+    }            
+
+    return newObj;
+
+    // 该函数存在的问题：
+    // 同名的属性会发生覆盖现象
+
+    // 如果对象是由构造函数创建出来的，那么是否要拷贝原型链上的属性
+    // 传入的对象是使用对象字面量{}创建的对象还是由构造函数生成的对象
+}
+
+let obj={
+    abc:'123',
+    def:[{a:1,b:2,c:3},{q:8,w:9}],
+    qwe:{e: 4, f: 5}
+};
+let news = deepCopy(obj);   
+console.log(news);
+/* 复制法一console：                       复制法二console：  
+{abc: "123" ,                             {abc: "123",
+def: Array(2),                             def: {q: 8, w: 9},
+    0: {a: 1, b: 2, c: 3}                  qwe: {e: 4, f: 5}}
+    1: {q: 8, w: 9}
+qwe: {e: 4, f: 5}}
+*/
+
+// // 实现jQuery中的extend函数进行拷贝
+// function deepCopy(obj) {
+//     if (obj && obj instanceof Object) {
+//         var result = obj.constructor === Array ? [] : {};
+//         for(let i in obj) {
+//             // 避免相互引用造成死循环
+//             var prop = obj[i]; 
+//             if (prop == obj) {
+//                 continue;
+//             }
+//             // hasOwnProperty(propertyName)方法 是用来检测属性是否为对象的自有属性，如果是，返回true，否者false; 参数propertyName指要检测的属性名；
+//             if (obj.hasOwnProperty(i)) {
+//                 result[i] = typeof obj[i] === 'object' ? deepCopy(obj[i]) : obj[i];
+//             }
+//         }
+//     } else {
+//         var result = obj;
+//     }
+    
+//     return result;
+// }
+
+// let obj={
+//     abc:'123',
+//     def:[{a:1,b:2,c:3},{q:8,w:9}],
+//     qwe:{e: 4, f: 5}
+// };
+// let news = deepCopy(obj);
+// console.log(news);
+```
 ## 实践：函数柯里化
 接收函数作为参数的函数，都可以叫做高阶函数。柯里化，其实就是高阶函数的一种特殊用法。  
 柯里化（Currying），是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。如：
@@ -95,6 +213,7 @@ function create_new(fn) {
         throw `${fn} must be a function`;
     }
 
+    // Object.create()方法接收两个参数：一个用作新对象原型的对象，一个为新对象定义额外属性的对象（这个参数是可选的）
     const obj = Object.create(fn.prototype);
     // 等价于 
     // var obj = new Object ();

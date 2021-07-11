@@ -8,7 +8,7 @@
 - [脱离文档流](#脱离文档流)
 - [position 属性几个值的区别](#position-属性几个值的区别)
 - [BFC](#bfc)
-- [CSS3 新特性，animation 等](#css3-新特性animation-等)
+- [CSS3 新特性](#css3-新特性)
 - [熟练 flex 布局](#熟练-flex-布局)
 - [了解 grid 布局](#了解-grid-布局)
 
@@ -217,23 +217,23 @@ box-sizing
     > sticky定位的阈值是相对它的最近滚动祖先来定义的，而 sticky 的作用区域也是它的第一个非static父元素内，也就是说粘性布局的效果只在该父元素内表现出来。
 ### BFC
 1. 在解释什么是BFC之前，我们需要先知道Box、Formatting Context的概念：
-    - Box：css布局的基本单位
-      - 直观点来说，就是一个页面是由很多个 Box 组成的。元素的类型和 display 属性，决定了这个 Box 的类型。 不同类型的 Box， 会参与不同的 Formatting Context（一个决定如何渲染文档的容器），因此Box内的元素会以不同的方式渲染。有三种盒子：
-        - block-level box：display 属性为 block, list-item, table 的元素，会生成 block-level box。并且参与 block fomatting context；
-        - inline-level box：display 属性为 inline, inline-block, inline-table 的元素，会生成 inline-level box。并且参与 inline formatting context；
-        - run-in box: css3 中才有
-    - Formatting Context
-      - 它是页面中的一块渲染区域，并且有一套渲染规则，它决定了其子元素将如何定位，以及和其他元素的关系和相互作用。最常见的 Formatting context 有 Block fomatting context (简称BFC)和 Inline formatting context (简称IFC)。
+- Box：css布局的基本单位  
+直观点来说，就是一个页面是由很多个 Box 组成的。元素的类型和 display 属性，决定了这个 Box 的类型。 不同类型的 Box， 会参与不同的 Formatting Context（一个决定如何渲染文档的容器），因此Box内的元素会以不同的方式渲染。有三种盒子：
+   - block-level box：display 属性为 block, list-item, table 的元素，会生成 block-level box。并且参与 block fomatting context；
+   - inline-level box：display 属性为 inline, inline-block, inline-table 的元素，会生成 inline-level box。并且参与 inline formatting context；
+   - run-in box: css3 中才有
+- Formatting Context  
+它是页面中的一块渲染区域，并且有一套渲染规则，它决定了其子元素将如何定位，以及和其他元素的关系和相互作用。最常见的 Formatting context 有 Block fomatting context (简称BFC)和 Inline formatting context (简称IFC)。
 2. BFC(Block formatting context)直译为"块级格式化上下文"。它是一个独立的渲染区域，只有Block-level box参与， 它规定了内部的Block-level Box如何布局，并且与这个区域外部毫不相干，并且在一个BFC中，块盒与行盒（行盒由一行中所有的内联元素所组成）都会垂直的沿着其父元素的边框排列。
 3. BFC的布局规则
-    - 内部的Box会垂直方向，一个接一个地放置
-    - Box垂直的距离有margin决定，适用于同一个BFC相邻的两个Box的margin距离会发生重叠
-    - 每个元素margin box的左边与包含块border box左边相接解，即使在浮动也如此
-    - BFC的区域不会与flont box 重叠
-    - BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素，反之如此
-    - 计算BFC的高度是浮动元素也参与计算 
+- 内部的Box会在垂直方向，一个接一个地放置。
+- Box垂直方向的距离由margin决定。属于同一个BFC的两个相邻Box的margin会发生重叠
+- 每个元素的margin box的左边， 与包含块border box的左边相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如 此。
+- BFC的区域不会与float box重叠。
+- BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
+- 计算BFC的高度时，浮动元素也参与计算
 4. 如何创建BFC
-    - 根元素或包含根元素的元素
+    - 根元素或包含根元素的元素，如`<html>`
     -  浮动元素（元素的 float 不是 none）
     -  绝对定位元素（元素的 position 为 absolute 或 fixed）
     -  行内块元素（元素的 display 为 inline-block）
@@ -245,14 +245,14 @@ box-sizing
     -   contain 值为 layout、content或 strict 的元素
     -  弹性元素（display为 flex 或 inline-flex元素的直接子元素）
     -  网格元素（display为 grid 或 inline-grid 元素的直接子元素）
-    -  多列容器（元素的 column-count 或 column-width 不为 auto，包括 ``column-count 为 1）
+    -  多列容器（元素的 column-count 或 column-width 不为 auto，包括 column-count 为 1）
     -   column-span 为 all 的元素始终会创建一个新的BFC，即使该元素没有包裹在一个多列容器中（标准变更，Chrome bug）。
 5. BFC的作用
     - 利用BFC避免margin重叠。
     - 阻止元素被浮动元素覆盖 -> 可应用于自适应两栏布局（避免右侧与左侧发生重叠)
     - 清除浮动
       - 当我们不给父节点设置高度，子节点设置浮动的时候，会发生高度塌陷，这个时候我们就要清除浮动。这个时候我们根据最后一条规则：计算BFC的高度时，浮动元素也参与计算。于是给父节点激活BFC
-### CSS3 新特性，animation 等 
+### CSS3 新特性
 - 过渡  
 transition： CSS属性，花费时间，效果曲线(默认ease)，延迟时间(默认0)。
     ```css
@@ -264,7 +264,7 @@ transition： CSS属性，花费时间，效果曲线(默认ease)，延迟时间
     transition-timing-function: linear;
     transition-delay: 2s;
     ```
-    transition-timing-function 属性
+    transition-timing-function 的参数：
     |值|描述|
     |:--|:--|
     |linear|规定以相同速度开始至结束的过渡效果（等于 cubic-bezier(0,0,1,1)）|
@@ -279,22 +279,22 @@ animation：动画名称，一个周期花费时间，运动曲线（默认ease�
     animation-name	规定动画的名称。
     animation-duration	规定动画完成一个周期所花费的秒或毫秒。默认是 0。
     animation-timing-function	规定动画的速度曲线。默认是 "ease"。
-        linear	动画从头到尾的速度是相同的。	测试
-        ease	默认。动画以低速开始，然后加快，在结束前变慢。	测试
-        ease-in	动画以低速开始。	测试
-        ease-out	动画以低速结束。	测试
-        ease-in-out	动画以低速开始和结束。	测试
+        linear	动画从头到尾的速度是相同的。	
+        ease	默认。动画以低速开始，然后加快，在结束前变慢。
+        ease-in	动画以低速开始。	
+        ease-out	动画以低速结束。	
+        ease-in-out	动画以低速开始和结束。
         cubic-bezier(n,n,n,n)	在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。
 
     animation-delay	规定动画何时开始。默认是 0。
     animation-iteration-count	规定动画被播放的次数。默认是 1
     animation-direction	规定动画是否在下一周期逆向地播放。默认是 "normal"。
-        normal	默认值。动画应该正常播放。	测试
-        alternate	动画应该轮流反向播放。	测试
+        normal	默认值。动画应该正常播放。	
+        alternate	动画应该轮流反向播放。
 
     animation-play-state	规定动画是否正在运行或暂停。默认是 "running"。
-        paused	规定动画已暂停。	测试
-        running	规定动画正在播放。	测试
+        paused	规定动画已暂停。	
+        running	规定动画正在播放。	
 
     animation-fill-mode	规定对象动画时间之外的状态。
         none	不改变默认行为。
@@ -318,7 +318,6 @@ animation：动画名称，一个周期花费时间，运动曲线（默认ease�
     skew(x-angle,y-angle)	定义 2D 倾斜转换，沿着 X 和 Y 轴。
     skewX(angle)	定义 2D 倾斜转换，沿着 X 轴。
     skewY(angle)	定义 2D 倾斜转换，沿着 Y 轴。
-    css
     ```
     - 所有 2D 变换属性：
         - transform	向元素应用 2D 或 3D 转换。
@@ -327,8 +326,7 @@ animation：动画名称，一个周期花费时间，运动曲线（默认ease�
             x-axis	定义视图被置于 X 轴的何处。可能的值：left，center，right，length，%
             y-axis	定义视图被置于 Y 轴的何处。可能的值：top，center，bottom，length，%
             z-axis	定义视图被置于 Z 轴的何处。可能的值：length
-            css
-
+            ```
   - 3D Transform 方法
     ```css
     matrix3d(n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n)	定义 3D 转换，使用 16 个值的 4x4 矩阵。
@@ -493,7 +491,7 @@ hsla（h:色相”，“s：饱和度”，“l：亮度”，“a：透明度�
         }
     }
 
-    // 上面代码表示的是：当屏幕小于或等于480px时，页面中的广告区块（.ads）都讲被隐藏
+    上面代码表示的是：当屏幕小于或等于480px时，页面中的广告区块（.ads）都讲被隐藏
     ```
     更复杂的媒体查询
     - 媒体查询中的“与”逻辑
