@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现自适应两栏布局</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        div{
+            height:500px;
+        }
+        
+        /* 方法一：浮动布局 */
+        .left{
+            width:300px;
+            background-color:yellow;
+            float:left;
+        }
+        .right{
+            margin-left:300px;
+            background-color:aqua;
+        } 
+        /* 左侧栏固定宽度向左浮动，右侧主要内容则用margin-left留出左侧栏的宽度，默认宽度为auto，自动填满剩下的宽度。 */
+
+        /* 方法二：BFC */
+        .whole{
+            overflow: hidden;
+        }
+        .left{
+            float: left;
+            width:300px;
+            background-color:yellow;
+        }
+        .right{
+            background-color:aqua;
+        }
+
+        /* 方法三：浮动布局+负外边距（双飞翼布局的两栏版） */
+        .left{
+            width:300px;
+            float: left;
+            margin-right: -100%;
+            background-color:yellow;
+        }
+        .right{
+            width: 100%;
+            float: left;
+            margin-left:300px;
+            background-color:aqua;
+        }
+        /* 左侧固定栏指定一个右侧的100%的负外边距，为整个屏幕的宽度，这就使得right最左侧可以与屏幕最左侧对齐。
+        /此时right的宽度是100%，因此需要指定一个左侧的外边距用于空出左侧栏的位置，即左侧栏的宽度300px */
+
+        /* 方法四：绝对定位 */
+        .left{
+            width:300px;
+            background-color:yellow;
+            position: absolute;
+        }
+        .right{
+            margin-left: 300px;
+            background-color:aqua;
+        }
+
+        /* 方法五：flex盒模型 */
+        .whole{
+            display:flex;
+        }
+        .left{
+            width: 300px;
+            background-color:yellow;
+        }
+        .right{
+            flex: 1;
+            background-color:aqua;
+        }
+
+        /* 方法六：float+calc()函数 */
+        .left{
+            width:300px;
+            background-color:yellow;
+            float: left;
+        }
+        .right{
+            float: right;
+            width: calc(100% - 300px);
+            background-color:aqua;
+        }
+    </style>
+</head>
+<body>
+    <div class="whole">
+        <div class="left">left</div>
+        <div class="right">right</div>
+    </div>
+</body>
+</html>
